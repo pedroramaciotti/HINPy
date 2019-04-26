@@ -1,2 +1,3 @@
-# hin-diversity
-A framework for the analysis of recommender systems and the diversity of recommendations in Heterogeneous Information Networks
+# HINPy (Heterogeneous Information Networks for Python)
+
+A framework for the analysis of diversity of recommendations in Heterogeneous Information Networks for Python.
