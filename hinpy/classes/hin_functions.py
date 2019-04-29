@@ -23,3 +23,19 @@ def CheckPath(relation_list):
     # TODO: Check conformity of the path
 
     return relation_list;
+
+###########################################
+# Extract from tables                     #
+###########################################
+
+def GetObjectListFromTable(table):
+    o_list =list(table.start_object)
+    o_list+=list(table.end_object)
+    o_list =list(set(o_list))
+    return o_list;
+
+def GetObjectsFromTableWithGroup(table,object_group_name):
+    o_list =list(table[table.start_group==object_group_name].start_object)
+    o_list+=list(table[table.end_group==object_group_name].end_object)
+    o_list=list(set(o_list))
+    return o_list;

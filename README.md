@@ -6,8 +6,10 @@ A framework for the analysis of diversity of recommendations in Heterogeneous In
 TODO:
 
 - Test Multiversity functionalities with examples
-- Create links of inverse relation
-- Delete link Groups
-- Merge Link Groups
+- (Done) Create Links of inverse relation
+- (Done) Delete link Groups
+- (Done) Merge Link Groups
+- (Done~) Create Link Group from procedure
+- Tests HIN transformations
 - Create Link Group from recommendations
 - Create GNN recommendations

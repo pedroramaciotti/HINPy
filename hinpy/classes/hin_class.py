@@ -5,13 +5,15 @@ from .link_group_class import LinkGroup
 from .object_group_class import ObjectGroup
 from .hin_functions import *
 from hinpy.diversity.truediversity import *
+from hinpy.general import *
 
 class HIN:
-    """HIN: Heterogeneous Information Network Object
+    """
+    HIN: Heterogeneous Information Network Object
 
     """
 
-    def __init__(self,filename=None,table=None,name=None):
+    def __init__(self,filename=None,table=None,name=None,inverse_relations=True):
 
         # If there is no table, create from file
         if table is None:
@@ -36,6 +38,110 @@ class HIN:
         self.ReBuildObjectGroupsFromTable()
         self.ReBuildLinkGroupsFromTable()
 
+        if inverse_relations:
+            for relation_name in self.table.relation.unique():
+                self.CreateInverseLinkGroup(relation_name)
+
+        return;
+
+    ###########################################
+    # Functions Changing Link Groups          #
+    ###########################################
+
+    def CreateInverseLinkGroup(self,existing_relation_name,new_relation_name=None):
+        # Checking that the relation exists
+        if existing_relation_name not in self.table.relation.unique():
+            raise ValueError('Relation %s does not exist.'%existing_relation_name)
+        # Selecting the sub table of the relation to inverse
+        subtable=self.table[self.table.relation==existing_relation_name]
+        # Creating the new, appendable, subtable with the inverse relation
+        new_subtable=pd.DataFrame(columns=subtable.columns)
+        # Filling the entries of the new appendable subtable
+        new_subtable.start_group=subtable.end_group
+        new_subtable.start_object=subtable.end_object
+        new_subtable.end_group=subtable.start_group
+        new_subtable.end_object=subtable.start_object
+        new_subtable.timestamp=pd.Timestamp('')
+        new_subtable.value=''
+        # Giving a name to the new relation
+        if new_relation_name is None:
+            new_subtable.relation='inverse_'+existing_relation_name
+        else:
+            new_subtable.relation=new_relation_name
+        # Appending the table and changing the HIN
+        self.table=self.table.append(new_subtable)
+        new_link_group_id = self.GetNewLinkGroupID()
+        sog_name=new_subtable.start_group.iloc[0]
+        eog_name=new_subtable.end_group.iloc[0]
+        self.link_group_dic[new_link_group_id] = LinkGroup(table=new_subtable,
+                                                        name=new_subtable.relation.iloc[0],
+                                                        id=new_link_group_id,
+                                                        start_og=self.GetObjectGroup(sog_name),
+                                                        end_og=self.GetObjectGroup(eog_name))
+
+    def DeleteLinkGroup(self,relation_name):
+        self.link_group_dic.pop(self.GetLinkGroupId(relation_name))
+        self.table=self.table[self.table.relation!=relation_name]
+        return;
+
+    def MergeLinkGroups(self,relation_name, relation_name_to_merge,
+                        new_relation_name=None, delete_merged_relation=False):
+        # Get the group ids of the involved Link Groups
+        og1_start_id = self.GetLinkGroup(relation_name).start_id
+        og1_end_id = self.GetLinkGroup(relation_name).end_id
+        og2_start_id = self.GetLinkGroup(relation_name_to_merge).start_id
+        og2_end_id = self.GetLinkGroup(relation_name_to_merge).end_id
+        # Check that relations start and end in the same Object Groups
+        if (og1_start_id!=og2_start_id) or (og1_end_id!=og2_end_id):
+            raise ValueError('Link Groups to be merged do not start and end in the same Object Groups.')
+        # Subtable to be merged into a Link Group
+        subtable = self.table[self.table.relation==relation_name]
+        subtable_to_merge = self.table[self.table.relation==relation_name_to_merge]
+        subtable_to_merge.relation =subtable.relation
+        merged_table=subtable.append(subtable_to_merge)
+        self.table=self.table[self.table.relation!=relation_name]
+        if new_relation_name is not None:
+            merged_table.relation=new_relation_name
+        self.table=self.table.append(merged_table)
+        lg_id = self.GetLinkGroupId(relation_name)
+        self.link_group_dic[lg_id] = LinkGroup(table=merged_table,
+                                                name=merged_table.relation.iloc[0],
+                                                id=lg_id,
+                                                start_og=og1_start_id,
+                                                end_og=og1_end_id)
+        if delete_merged_relation:
+            self.DeleteLinkGroup(relation_name_to_merge)
+        return;
+
+    def CreateLinkGroupFromLinkGroup(self,relation_name,new_relation_name,condition_method):
+        # Get the group ids of the Link Group
+        og_start_id = self.GetLinkGroup(relation_name).start_id
+        og_end_id = self.GetLinkGroup(relation_name).end_id
+        # Getting subtable of the Link Group
+        subtable=self.table[self.table.relation==relation_name]
+        # Applyting the condition
+        subtable=subtable[subtable.value.apply(condition_method)]
+        # Changing name
+        subtable.relation = new_relation_name
+        # Saving the new Link Group
+        lg_id = self.GetNewLinkGroupID()
+        self.link_group_dic[lg_id] = LinkGroup(table=subtable,
+                                                name=subtable.relation.iloc[0],
+                                                id=lg_id,
+                                                start_og=og_start_id,
+                                                end_og=og_end_id)
+        return;
+
+    def CreateLinkGroupFromRS(self,relation_name,new_relation_name,parameters):
+        # Just copying for now, for tests sake !
+        lg_id = self.GetNewLinkGroupID()
+        lg = self.GetLinkGroup(relation_name)
+        table=self.table(self.table.relation==relation_name)
+        self.link_group_dic[lg_id] = LinkGroup(table=table,
+                                                name=table.relation.iloc[0],
+                                                id=lg_id,
+                                                start_og=lg.start_id,
+                                                end_og=lg.end_id)
         return;
 
     ###########################################
@@ -46,9 +152,7 @@ class HIN:
         self.object_group_dic = {}
         object_group_id = 0
         for og_name in list(set(self.table.start_group.unique())|set(self.table.end_group.unique())):
-            o_list =list(self.table[self.table.start_group==og_name].start_object)
-            o_list+=list(self.table[self.table.end_group==og_name].end_object)
-            o_list=list(set(o_list))
+            o_list = GetObjectsFromTableWithGroup(self.table,og_name)
             self.object_group_dic[object_group_id] = ObjectGroup(object_list=o_list,
                                                                 name=og_name,
                                                                 id=object_group_id)
@@ -74,6 +178,7 @@ class HIN:
     # HIN and Group Property Retrievers #
     #####################################
 
+    # Get groups
     def GetObjectGroup(self,name):
         for og_id,og in self.object_group_dic.items():
             if og.name==name:
@@ -86,6 +191,7 @@ class HIN:
                 return lg;
         raise ValueError('Link Group %s not found'%name)
 
+    # Get Ids of groups
     def GetObjectGroupId(self,name):
         for og_id,og in self.object_group_dic.items():
             if og.name==name:
@@ -97,6 +203,21 @@ class HIN:
             if lg.name==name:
                 return lg_id;
         raise ValueError('Link Group %s not found'%name)
+
+    # Get names of groups
+    def GetObjectGroupsNames(self):
+        return [og.name for og_id,og in self.object_group_dic.items()]
+
+    def GetLinkGroupsNames(self):
+        return [lg.name for lg_id,lg in self.link_group_dic.items()]
+
+    # Get vacant id for new groups
+    def GetNewLinkGroupID(self):
+        return FirstAbsentNumberInList([k for k,v in self.link_group_dic.items()])
+
+    def GetNewObjectGroupID(self):
+        return FirstAbsentNumberInList([k for k,v in self.object_group_dic.items()])
+
 
     ##############################################
     # Path Proportional Abundances & Diversities #

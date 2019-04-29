@@ -1,11 +1,8 @@
 
 
 import hinpy
-
 import pandas as pd
 import numpy as np
-
-
 
 a,b=hinpy.datasets.random_hin_generator([('user',10),('item',10)],[])
 
