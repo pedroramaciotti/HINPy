@@ -4,9 +4,6 @@ import numpy as np
 from scipy import sparse
 from sklearn.preprocessing import normalize
 
-
-
-
 def StochasticMatrix(table, start_og, end_og):
     # Directed matrices
     matrix = sparse.lil_matrix((start_og.size,end_og.size))

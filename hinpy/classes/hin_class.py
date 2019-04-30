@@ -30,9 +30,10 @@ class HIN:
 
         # TODO: Aggregation of multi edges: None, Average, Sum
 
-        # Filling the fields of
+        # Filling the fields
         self.table = table
         self.name = name
+        self.info = {}
 
         # Building Object and Link Groups from Table
         self.ReBuildObjectGroupsFromTable()
@@ -87,36 +88,36 @@ class HIN:
     def MergeLinkGroups(self,relation_name, relation_name_to_merge,
                         new_relation_name=None, delete_merged_relation=False):
         # Get the group ids of the involved Link Groups
-        og1_start_id = self.GetLinkGroup(relation_name).start_id
-        og1_end_id = self.GetLinkGroup(relation_name).end_id
-        og2_start_id = self.GetLinkGroup(relation_name_to_merge).start_id
-        og2_end_id = self.GetLinkGroup(relation_name_to_merge).end_id
+        og1_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
+        og1_end   = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
+        og2_start = self.object_group_dic[self.GetLinkGroup(relation_name_to_merge).start_id]
+        og2_end   = self.object_group_dic[self.GetLinkGroup(relation_name_to_merge).end_id]
         # Check that relations start and end in the same Object Groups
-        if (og1_start_id!=og2_start_id) or (og1_end_id!=og2_end_id):
+        if (og1_start.id!=og2_start.id) or (og1_end.id!=og2_end.id):
             raise ValueError('Link Groups to be merged do not start and end in the same Object Groups.')
         # Subtable to be merged into a Link Group
         subtable = self.table[self.table.relation==relation_name]
         subtable_to_merge = self.table[self.table.relation==relation_name_to_merge]
-        subtable_to_merge.relation =subtable.relation
+        subtable_to_merge.loc[:,'relation'] =subtable.relation.iloc[0]
         merged_table=subtable.append(subtable_to_merge)
         self.table=self.table[self.table.relation!=relation_name]
         if new_relation_name is not None:
-            merged_table.relation=new_relation_name
+            merged_table.loc[:,'relation']=new_relation_name
         self.table=self.table.append(merged_table)
         lg_id = self.GetLinkGroupId(relation_name)
         self.link_group_dic[lg_id] = LinkGroup(table=merged_table,
                                                 name=merged_table.relation.iloc[0],
                                                 id=lg_id,
-                                                start_og=og1_start_id,
-                                                end_og=og1_end_id)
+                                                start_og=og1_start,
+                                                end_og=og1_end)
         if delete_merged_relation:
             self.DeleteLinkGroup(relation_name_to_merge)
         return;
 
     def CreateLinkGroupFromLinkGroup(self,relation_name,new_relation_name,condition_method):
         # Get the group ids of the Link Group
-        og_start_id = self.GetLinkGroup(relation_name).start_id
-        og_end_id = self.GetLinkGroup(relation_name).end_id
+        og_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
+        og_end  = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
         # Getting subtable of the Link Group
         subtable=self.table[self.table.relation==relation_name]
         # Applyting the condition
@@ -128,8 +129,8 @@ class HIN:
         self.link_group_dic[lg_id] = LinkGroup(table=subtable,
                                                 name=subtable.relation.iloc[0],
                                                 id=lg_id,
-                                                start_og=og_start_id,
-                                                end_og=og_end_id)
+                                                start_og=og_start,
+                                                end_og=og_end)
         return;
 
     def CreateLinkGroupFromRS(self,relation_name,new_relation_name,parameters):
@@ -252,9 +253,15 @@ class HIN:
         return matrix.T.dot(P);
 
     def GetSetCollectiveTrueDiversity(self,relation_list,alpha,
-                                    start_object_subset=None):
+                                    start_object_subset=None,
+                                    renormalize=True):
         P=self.GetPathProportionalAbundance(relation_list,start_object_subset=start_object_subset)
-        # TODO: What to do with mass accumulated on sink?
+        # Move mass from the sink node to the rest of the nodes
+        if renormalize:
+            P=P[:-1]
+            if P.sum()<1e-8:
+                raise ValueError('Proportional Abundance cannot be renormalized because all mass was in the sink.')
+            P=P/P.sum()
         return TrueDiversity(P,alpha);
 
     def GetSetMeanIndTrueDiversity(self,relation_list,alpha,

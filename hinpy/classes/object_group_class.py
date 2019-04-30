@@ -20,6 +20,7 @@ class ObjectGroup:
     """
     def __init__(self, object_list, name, id):
         self.name = name
+        self.info = {}
         self.id   = id
         self.size = len(object_list)
         self.objects_ids_queue = list(range(self.size))

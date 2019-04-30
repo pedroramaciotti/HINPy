@@ -25,13 +25,11 @@ class LinkGroup():
     """
     def __init__(self, table, name, id, start_og, end_og):
         self.name = name
+        self.info = {}
         self.id   = id
         self.start_id  = start_og.id
         self.end_id    = end_og.id
         self.size = table.shape[0]
-        self.links_ids_queue = list(range(self.size))
-        # self.table = table
-
         self.stochastic_matrix = StochasticMatrix(table, start_og, end_og)
 
         return;

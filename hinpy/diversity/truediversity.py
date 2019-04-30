@@ -1,15 +1,14 @@
 import numpy as np
+from .utils import *
 
-def TrueDiversity(P,alpha):
-    # Convert to array in case it was called on a list
+def TrueDiversity(P,alpha,renormalize=False):
+    # Convert, check, trim, and renormalize
     P=np.array(P)
-    # Check that it is a probability distribution
-    if np.abs(P.sum()-1)>1e-10:
-        raise ValueError('P does not sume 1 (sum=%f)'%P.sum())
-    if P[0>P].size!=0:
-        raise ValueError('Some elements of P are negative.')
-    # Keep only positive parts
-    P=P[P>1e-20]
+    CheckDistribution(P)
+    P=TrimDistribution(P)
+    if renormalize:
+        P=RenormalizeDistribution(P)
+    # Computing the True Diversity
     if alpha==0:
         return P.size
     elif alpha==1:
