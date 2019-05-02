@@ -4,8 +4,10 @@ import numpy as np
 from .link_group_class import LinkGroup
 from .object_group_class import ObjectGroup
 from .hin_functions import *
+from hinpy.rs.hin_rs import *
 from hinpy.diversity.truediversity import *
 from hinpy.general import *
+
 
 class HIN:
     """
@@ -23,7 +25,7 @@ class HIN:
                     'start_group','start_object',
                     'end_group','end_object',
                     'value','timestamp']
-            table=pd.read_csv(filename,sep=',',header=None,names=columns)
+            table=pd.read_csv(filename,sep=',',header=None,names=columns,low_memory=False)
 
         # Cheking the table
         table = CheckTable(table)
@@ -54,7 +56,7 @@ class HIN:
         if existing_relation_name not in self.table.relation.unique():
             raise ValueError('Relation %s does not exist.'%existing_relation_name)
         # Selecting the sub table of the relation to inverse
-        subtable=self.table[self.table.relation==existing_relation_name]
+        subtable=self.table[self.table.relation==existing_relation_name].copy(deep=True)
         # Creating the new, appendable, subtable with the inverse relation
         new_subtable=pd.DataFrame(columns=subtable.columns)
         # Filling the entries of the new appendable subtable
@@ -96,9 +98,9 @@ class HIN:
         if (og1_start.id!=og2_start.id) or (og1_end.id!=og2_end.id):
             raise ValueError('Link Groups to be merged do not start and end in the same Object Groups.')
         # Subtable to be merged into a Link Group
-        subtable = self.table[self.table.relation==relation_name]
-        subtable_to_merge = self.table[self.table.relation==relation_name_to_merge]
-        subtable_to_merge.loc[:,'relation'] =subtable.relation.iloc[0]
+        subtable = self.table[self.table.relation==relation_name].copy(deep=True)
+        subtable_to_merge = self.table[self.table.relation==relation_name_to_merge].copy(deep=True)
+        subtable_to_merge.loc[:,'relation'] = subtable.relation.iloc[0]
         merged_table=subtable.append(subtable_to_merge)
         self.table=self.table[self.table.relation!=relation_name]
         if new_relation_name is not None:
@@ -119,7 +121,7 @@ class HIN:
         og_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
         og_end  = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
         # Getting subtable of the Link Group
-        subtable=self.table[self.table.relation==relation_name]
+        subtable=self.table[self.table.relation==relation_name].copy(deep=True)
         # Applyting the condition
         subtable=subtable[subtable.value.apply(condition_method)]
         # Changing name
@@ -134,13 +136,17 @@ class HIN:
         return;
 
     def CreateLinkGroupFromRS(self,relation_name,new_relation_name,parameters):
-        # Just copying for now, for tests sake !
-        lg_id = self.GetNewLinkGroupID()
+
+        # Creating the recommendation table
+        subtable = self.table[self.table.relation==relation_name].copy(deep=True)
+        reco_table,report = HINRS(table=subtable,parameters=parameters,hin=self)
+        reco_table.loc[:,'relation']= new_relation_name
+        # Creating the new Link Group from the recommendation
+        new_link_group_id = self.GetNewLinkGroupID()
         lg = self.GetLinkGroup(relation_name)
-        table=self.table(self.table.relation==relation_name)
-        self.link_group_dic[lg_id] = LinkGroup(table=table,
-                                                name=table.relation.iloc[0],
-                                                id=lg_id,
+        self.link_group_dic[lg_id] = LinkGroup(table=reco_table,
+                                                name=new_relation_name,
+                                                id=new_link_group_id,
                                                 start_og=lg.start_id,
                                                 end_og=lg.end_id)
         return;
