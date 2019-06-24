@@ -20,3 +20,6 @@ TODO:
 - Create runtime tests
 - Create Link Group from recommendations
 - Create GNN recommendations
+
+### Installation
+Execute `pip install .` in the parent folder after downloading the project or `pip install git+https://github.com/pedroramaciott/HINPy`.
