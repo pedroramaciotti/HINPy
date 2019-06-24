@@ -22,10 +22,11 @@ TODO:
 - Create GNN recommendations
 
 ### Installation
-After you download the project execute:
+After you download the project, execute:
 
 - `pip install .` 
 
-in the parent folder. Equivalently just run:
+in the parent folder. Equivalently, you can just execute:
 
 - `pip install git+https://github.com/pedroramaciott/HINPy`
+
