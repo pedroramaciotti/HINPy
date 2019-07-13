@@ -3,22 +3,11 @@
 A framework for the analysis of diversity of recommendations in Heterogeneous Information Networks for Python.
 
 
+### Installation
+After you download the project, execute:
 
+- `pip install .` 
 
+in the parent folder. Equivalently, you can just execute:
 
-TODO:
-- Introduce verbose options for diversity operations
-- Check TrueDiversity: plots for growing alpha values
-- Behavior of Merge is not intuitive: what changes name? what changes id? What is deleted?
-- Implement starting probability as input for random walks
-- RMSE cross-validation for PP
-- Create runtime tests
-- Create GNN recommendations
-- Remove references to timestamps
-- Add seen relation to random recommender
-
-AR:
-- Acc Metrics for PP and CB
-- Test all RS
-- Databases
-- Adoption cycles
+- `pip install git+https://github.com/pedroramaciott/HINPy`
