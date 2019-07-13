@@ -1,5 +1,8 @@
 import pandas as pd
 
+from time import time as TCounter
+
+from hinpy.general import *
 
 class ObjectGroup:
     """
@@ -18,7 +21,9 @@ class ObjectGroup:
     objects_names : dic{int:str}
         Dictionary with the names of the objects indexed by their ids.
     """
-    def __init__(self, object_list, name, id):
+    def __init__(self, object_list, name, id,verbose=False):
+        t=TCounter()
+        VerboseMessage(verbose,'Building Object Group %s...'%name)
         self.name = name
         self.info = {}
         self.id   = id
@@ -29,6 +34,7 @@ class ObjectGroup:
         for object_id in self.objects_ids_queue:
             self.objects_names[object_id] = object_list[object_id]
             self.objects_ids[object_list[object_id]] = object_id
+        VerboseMessage(verbose,'Object Group %s built in %s.'%(name,ETSec2ETTime(TCounter()-t)))
         return;
 
     #
@@ -40,3 +46,15 @@ class ObjectGroup:
 
     def GetNames(self):
         return [k for k,v in self.objects_ids.items()];
+
+    def OjectPositionDicFromName(self):
+        object_position = {}
+        for obj,idx in self.objects_ids.items():
+            object_position[obj]=self.GetObjectQueuePos(obj)
+        return object_position;
+
+    def OjectNameDicFromPosition(self):
+        object_name = {}
+        for obj,idx in self.objects_ids.items():
+            object_name[self.GetObjectQueuePos(obj)]=obj
+        return object_name;

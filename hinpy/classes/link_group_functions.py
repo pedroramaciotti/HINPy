@@ -1,8 +1,14 @@
 import pandas as pd
-from .object_group_class import ObjectGroup
 import numpy as np
 from scipy import sparse
 from sklearn.preprocessing import normalize
+
+from time import time as TCounter
+
+from hinpy.general import *
+
+from .object_group_class import ObjectGroup
+
 
 def StochasticMatrix(table, start_og, end_og):
     # Directed matrices

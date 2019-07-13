@@ -3,20 +3,22 @@
 A framework for the analysis of diversity of recommendations in Heterogeneous Information Networks for Python.
 
 
-TODO:
 
-- Introduce verbose options
-- Adapt names to literature & TCS article
-- Implement classic diversity measures
-- A DataFrame is being changed somewhere by changing a copy of a slice.
-- Check TrueDiversity equation and validity in extreme cases, large alpha
+
+
+TODO:
+- Introduce verbose options for diversity operations
+- Check TrueDiversity: plots for growing alpha values
 - Behavior of Merge is not intuitive: what changes name? what changes id? What is deleted?
 - Implement starting probability as input for random walks
-- (Done) Create Links of inverse relation
-- (Done) Delete link Groups
-- (Done) Merge Link Groups
-- (Done~) Create Link Group from procedure
-- (Done) Tests HIN transformations
+- RMSE cross-validation for PP
 - Create runtime tests
-- Create Link Group from recommendations
 - Create GNN recommendations
+- Remove references to timestamps
+- Add seen relation to random recommender
+
+AR:
+- Acc Metrics for PP and CB
+- Test all RS
+- Databases
+- Adoption cycles

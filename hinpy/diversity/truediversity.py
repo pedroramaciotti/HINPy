@@ -13,7 +13,7 @@ def TrueDiversity(P,alpha,renormalize=False):
         return P.size
     elif alpha==1:
         return 1.0/np.power(P,P).prod()
-    elif alpha>1e20:
+    elif alpha>1e3:
         return 1.0/P.max()
     else:
         return np.power(np.power(P,alpha).sum(),1/(1-alpha))

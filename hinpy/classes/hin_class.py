@@ -1,11 +1,17 @@
 import pandas as pd
 import numpy as np
 
+from sklearn.metrics.pairwise import cosine_similarity
+from scipy.stats.mstats import gmean
+
+from time import time as TCounter
+
 from .link_group_class import LinkGroup
 from .object_group_class import ObjectGroup
 from .hin_functions import *
 from hinpy.rs.hin_rs import *
 from hinpy.diversity.truediversity import *
+from hinpy.diversity.other_measures import *
 from hinpy.general import *
 
 
@@ -15,7 +21,8 @@ class HIN:
 
     """
 
-    def __init__(self,filename=None,table=None,name=None,inverse_relations=True):
+    def __init__(self,filename=None,table=None,name=None,inverse_relations=True,
+                 verbose=False):
 
         # If there is no table, create from file
         if table is None:
@@ -25,8 +32,10 @@ class HIN:
                     'start_group','start_object',
                     'end_group','end_object',
                     'value','timestamp']
+            t=TCounter()
+            VerboseMessage(verbose,'Reading table from %s ...'%filename)
             table=pd.read_csv(filename,sep=',',header=None,names=columns,low_memory=False)
-
+            VerboseMessage(verbose,'Table read in %s.'%ETSec2ETTime(TCounter()-t))
         # Cheking the table
         table = CheckTable(table)
 
@@ -38,12 +47,12 @@ class HIN:
         self.info = {}
 
         # Building Object and Link Groups from Table
-        self.ReBuildObjectGroupsFromTable()
-        self.ReBuildLinkGroupsFromTable()
+        self.ReBuildObjectGroupsFromTable(verbose)
+        self.ReBuildLinkGroupsFromTable(verbose)
 
         if inverse_relations:
             for relation_name in self.table.relation.unique():
-                self.CreateInverseLinkGroup(relation_name)
+                self.CreateInverseLinkGroup(relation_name,verbose=verbose)
 
         return;
 
@@ -51,7 +60,7 @@ class HIN:
     # Functions Changing Link Groups          #
     ###########################################
 
-    def CreateInverseLinkGroup(self,existing_relation_name,new_relation_name=None):
+    def CreateInverseLinkGroup(self,existing_relation_name,new_relation_name=None,verbose=False):
         # Checking that the relation exists
         if existing_relation_name not in self.table.relation.unique():
             raise ValueError('Relation %s does not exist.'%existing_relation_name)
@@ -64,15 +73,15 @@ class HIN:
         new_subtable.start_object=subtable.end_object
         new_subtable.end_group=subtable.start_group
         new_subtable.end_object=subtable.start_object
-        new_subtable.timestamp=pd.Timestamp('')
-        new_subtable.value=''
+        new_subtable.timestamp=subtable.timestamp
+        new_subtable.value=subtable.value
         # Giving a name to the new relation
         if new_relation_name is None:
             new_subtable.relation='inverse_'+existing_relation_name
         else:
             new_subtable.relation=new_relation_name
         # Appending the table and changing the HIN
-        self.table=self.table.append(new_subtable)
+        self.table=self.table.append(new_subtable).reset_index(drop=True)
         new_link_group_id = self.GetNewLinkGroupID()
         sog_name=new_subtable.start_group.iloc[0]
         eog_name=new_subtable.end_group.iloc[0]
@@ -80,15 +89,21 @@ class HIN:
                                                         name=new_subtable.relation.iloc[0],
                                                         id=new_link_group_id,
                                                         start_og=self.GetObjectGroup(sog_name),
-                                                        end_og=self.GetObjectGroup(eog_name))
+                                                        end_og=self.GetObjectGroup(eog_name),
+                                                        verbose=verbose)
 
     def DeleteLinkGroup(self,relation_name):
         self.link_group_dic.pop(self.GetLinkGroupId(relation_name))
-        self.table=self.table[self.table.relation!=relation_name]
+        self.table=self.table[self.table.relation!=relation_name].reset_index(drop=True)
         return;
 
     def MergeLinkGroups(self,relation_name, relation_name_to_merge,
-                        new_relation_name=None, delete_merged_relation=False):
+                        new_relation_name=None, delete_merged_relation=False,
+                        verbose=False):
+        """
+        Merge contents of relation_name_to_merge table into relation_name table.
+
+        """
         # Get the group ids of the involved Link Groups
         og1_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
         og1_end   = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
@@ -105,18 +120,20 @@ class HIN:
         self.table=self.table[self.table.relation!=relation_name]
         if new_relation_name is not None:
             merged_table.loc[:,'relation']=new_relation_name
-        self.table=self.table.append(merged_table)
+        self.table=self.table.append(merged_table).reset_index(drop=True)
         lg_id = self.GetLinkGroupId(relation_name)
         self.link_group_dic[lg_id] = LinkGroup(table=merged_table,
                                                 name=merged_table.relation.iloc[0],
                                                 id=lg_id,
                                                 start_og=og1_start,
-                                                end_og=og1_end)
+                                                end_og=og1_end,
+                                                verbose=verbose)
         if delete_merged_relation:
             self.DeleteLinkGroup(relation_name_to_merge)
         return;
 
-    def CreateLinkGroupFromLinkGroup(self,relation_name,new_relation_name,condition_method):
+    def CreateLinkGroupFromLinkGroup(self,relation_name,new_relation_name,condition_method,
+                                    verbose=False):
         # Get the group ids of the Link Group
         og_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
         og_end  = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
@@ -127,46 +144,58 @@ class HIN:
         # Changing name
         subtable.relation = new_relation_name
         # Saving the new Link Group
+        self.table = self.table.append(subtable).reset_index(drop=True)
         lg_id = self.GetNewLinkGroupID()
         self.link_group_dic[lg_id] = LinkGroup(table=subtable,
                                                 name=subtable.relation.iloc[0],
                                                 id=lg_id,
                                                 start_og=og_start,
-                                                end_og=og_end)
+                                                end_og=og_end,
+                                                verbose=verbose)
         return;
 
-    def CreateLinkGroupFromRS(self,relation_name,new_relation_name,parameters):
+    def CreateLinkGroupFromRS(self,relation_name,new_relation_name,parameters,
+                                        verbose=False):
 
+        """
+
+        """
         # Creating the recommendation table
-        subtable = self.table[self.table.relation==relation_name].copy(deep=True)
-        reco_table,report = HINRS(table=subtable,parameters=parameters,hin=self)
-        reco_table.loc[:,'relation']= new_relation_name
+        predicted_table,report = HINRS(self,relation_name,parameters=parameters,verbose=verbose)
+        predicted_table.loc[:,'relation']= new_relation_name
         # Creating the new Link Group from the recommendation
+        self.table = self.table.append(predicted_table).reset_index(drop=True)
         new_link_group_id = self.GetNewLinkGroupID()
         lg = self.GetLinkGroup(relation_name)
-        self.link_group_dic[lg_id] = LinkGroup(table=reco_table,
+        og_start = self.GetLinkGroupStartObjectGroup(lg.name)
+        og_end   = self.GetLinkGroupEndObjectGroup(lg.name)
+        self.link_group_dic[new_link_group_id] = LinkGroup(table=predicted_table,
                                                 name=new_relation_name,
                                                 id=new_link_group_id,
-                                                start_og=lg.start_id,
-                                                end_og=lg.end_id)
+                                                start_og=og_start,
+                                                end_og=og_end,
+                                                verbose=verbose)
+        self.link_group_dic[new_link_group_id].info = report
+
         return;
 
     ###########################################
     # Build Object and Link Groups from Table #
     ###########################################
 
-    def ReBuildObjectGroupsFromTable(self):
+    def ReBuildObjectGroupsFromTable(self,verbose=False):
         self.object_group_dic = {}
         object_group_id = 0
         for og_name in list(set(self.table.start_group.unique())|set(self.table.end_group.unique())):
             o_list = GetObjectsFromTableWithGroup(self.table,og_name)
             self.object_group_dic[object_group_id] = ObjectGroup(object_list=o_list,
                                                                 name=og_name,
-                                                                id=object_group_id)
+                                                                id=object_group_id,
+                                                                verbose=verbose)
             object_group_id+=1
         return;
 
-    def ReBuildLinkGroupsFromTable(self):
+    def ReBuildLinkGroupsFromTable(self,verbose=False):
         self.link_group_dic   = {}
         link_group_id=0
         for lg_name in self.table.relation.unique():
@@ -176,7 +205,8 @@ class HIN:
                                                             name=lg_name,
                                                             id=link_group_id,
                                                             start_og=self.GetObjectGroup(sog_name),
-                                                            end_og=self.GetObjectGroup(eog_name))
+                                                            end_og=self.GetObjectGroup(eog_name),
+                                                            verbose=verbose)
             link_group_id+=1
         return
 
@@ -192,11 +222,23 @@ class HIN:
                 return og;
         raise ValueError('Object Group %s not found'%name)
 
+    def GetLinkGroupStartObjectGroup(self,name):
+        return self.GetObjectGroup(self.object_group_dic[self.GetLinkGroup(name).start_id].name)
+
+    def GetLinkGroupEndObjectGroup(self,name):
+        return self.GetObjectGroup(self.object_group_dic[self.GetLinkGroup(name).end_id].name)
+
     def GetLinkGroup(self,name):
         for lg_id,lg in self.link_group_dic.items():
             if lg.name==name:
                 return lg;
         raise ValueError('Link Group %s not found'%name)
+
+    def GetLinkGroupDensity(self,name):
+        sogs = self.GetLinkGroupStartObjectGroup(name).size
+        eogs = self.GetLinkGroupEndObjectGroup(name).size
+        lgs =  self.GetLinkGroup(name).size
+        return lgs/(sogs*eogs);
 
     # Get Ids of groups
     def GetObjectGroupId(self,name):
@@ -240,7 +282,8 @@ class HIN:
         return matrix;
 
     def GetPathProportionalAbundance(self,relation_list,
-                                        start_object_subset=None):
+                                        start_object_subset=None,
+                                        verbose=False):
         # Compute stochastic matrix for the path
         matrix = self.GetPathStochasticMatrix(relation_list)
         # Get size of the start object group
@@ -260,7 +303,8 @@ class HIN:
 
     def GetSetCollectiveTrueDiversity(self,relation_list,alpha,
                                     start_object_subset=None,
-                                    renormalize=True):
+                                    renormalize=True,
+                                    verbose=False):
         P=self.GetPathProportionalAbundance(relation_list,start_object_subset=start_object_subset)
         # Move mass from the sink node to the rest of the nodes
         if renormalize:
@@ -272,7 +316,10 @@ class HIN:
 
     def GetSetMeanIndTrueDiversity(self,relation_list,alpha,
                                 method='geo',
-                                start_object_subset=None):
+                                start_object_subset=None,
+                                verbose=False):
+        t=TCounter()
+
         if method not in ['wpm','ar','geo']:
             raise ValueError('Invalid mean method. Admitted methods are wpm (weighted power mean), ar (arithmetic), or geo (geometric).')
         # Compute stochastic matrix for the path
@@ -282,7 +329,7 @@ class HIN:
         # Selecting the propostional abundaces of the start object subset
         if start_object_subset is not None:
             positions = [start_og.objects_ids_queue.index(start_og.objects_ids[name]) for name in start_object_subset]
-            PAs=PAs[PAs]
+            PAs=PAs[positions]
         # computing the diversity of each proportional abundance
         diversities=[]
         for P in PAs:
@@ -292,6 +339,31 @@ class HIN:
         if method=='ar':
             return diversities.mean()
         elif method=='geo':
-            return diversities.prod()**(1.0/diversities.size)
+            return gmean(diversities)
         elif method=='wpm':
             raise ValueError('Weighted Power Mean Method not implemented yet.')
+
+    ##############################################
+    # Classic Diversity Measures for RS          #
+    ##############################################
+
+    def SurprisalDivMes(self,relation_name,popularity_relation_name,verbose=False):
+        popularity_table = self.table[self.table.relation==popularity_relation_name].copy(deep=True)
+        recommended_table = self.table[self.table.relation==relation_name].copy(deep=True)
+        return Surprisal(popularity_table,recommended_table,verbose=verbose);
+
+    def NoveltyDivMes(self,relation_name,similarity_relation,verbose=False):
+        table = self.table[self.table.relation==relation_name].copy(deep=True)
+        sim_matrix = cosine_similarity(self.GetLinkGroup(similarity_relation).stochastic_matrix)
+        object_position = self.GetLinkGroupStartObjectGroup(similarity_relation).OjectPositionDicFromName()
+        return Novelty(table,sim_matrix,object_position,verbose=verbose);
+
+    def IntraListSimilarityDivMes(self,relation_name,similarity_relation,verbose=False):
+        table = self.table[self.table.relation==relation_name].copy(deep=True)
+        sim_matrix = cosine_similarity(self.GetLinkGroup(similarity_relation).stochastic_matrix)
+        object_position = self.GetLinkGroupStartObjectGroup(similarity_relation).OjectPositionDicFromName()
+        return IntraListSimilarity(table,sim_matrix,object_position,verbose=verbose);
+
+    def PersonalisationDivMes(self,relation_name,verbose=False):
+        table = self.table[self.table.relation==relation_name].copy(deep=True)
+        return Personalisation(table,verbose=verbose);
