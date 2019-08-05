@@ -365,6 +365,25 @@ class HIN:
         elif method=='wpm':
             raise ValueError('Weighted Power Mean Method not implemented yet.')
 
+    def GetObjectSetTrueDiversities(self,relation_list,alpha,
+                                start_object_subset=None,
+                                verbose=False):
+        if method not in ['wpm','ar','geo']:
+            raise ValueError('Invalid mean method. Admitted methods are wpm (weighted power mean), ar (arithmetic), or geo (geometric).')
+        # Compute stochastic matrix for the path
+        matrix = self.GetPathStochasticMatrix(relation_list).tolil()
+        # Deleting proportional abundance of the sink start object
+        PAs=matrix.data[:-1]
+        # Selecting the propostional abundaces of the start object subset
+        if start_object_subset is not None:
+            positions = [start_og.objects_ids_queue.index(start_og.objects_ids[name]) for name in start_object_subset]
+            PAs=PAs[positions]
+        # computing the diversity of each proportional abundance
+        diversities=[]
+        for P in PAs:
+            diversities.append(TrueDiversity(P,alpha))
+        return np.array(diversities);
+
     ##############################################
     # Classic Diversity Measures for RS          #
     ##############################################
