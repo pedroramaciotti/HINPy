@@ -142,7 +142,29 @@ class HIN:
         # Applyting the condition
         subtable=subtable[subtable.value.apply(condition_method)]
         # Changing name
-        subtable.relation = new_relation_name
+        subtable.loc[:,'relation'] = new_relation_name
+        # Saving the new Link Group
+        self.table = self.table.append(subtable).reset_index(drop=True)
+        lg_id = self.GetNewLinkGroupID()
+        self.link_group_dic[lg_id] = LinkGroup(table=subtable,
+                                                name=subtable.relation.iloc[0],
+                                                id=lg_id,
+                                                start_og=og_start,
+                                                end_og=og_end,
+                                                verbose=verbose)
+        return;
+
+    def CreateLinkGroupFromConfigurationModel(self,relation_name,new_relation_name,
+                                    verbose=False):
+        # Get the group ids of the Link Group
+        og_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
+        og_end  = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
+        # Getting subtable of the Link Group
+        subtable=self.table[self.table.relation==relation_name].copy(deep=True)
+        # Shuffling end objects
+        subtable.loc[:,'end_object'] = subtable.loc[:,'end_object'].sample(frac=1).values
+        # Changing name
+        subtable.loc[:,'relation'] = new_relation_name
         # Saving the new Link Group
         self.table = self.table.append(subtable).reset_index(drop=True)
         lg_id = self.GetNewLinkGroupID()
