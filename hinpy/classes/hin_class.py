@@ -368,8 +368,6 @@ class HIN:
     def GetObjectSetTrueDiversities(self,relation_list,alpha,
                                 start_object_subset=None,
                                 verbose=False):
-        if method not in ['wpm','ar','geo']:
-            raise ValueError('Invalid mean method. Admitted methods are wpm (weighted power mean), ar (arithmetic), or geo (geometric).')
         # Compute stochastic matrix for the path
         matrix = self.GetPathStochasticMatrix(relation_list).tolil()
         # Deleting proportional abundance of the sink start object
