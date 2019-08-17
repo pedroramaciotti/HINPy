@@ -18,6 +18,9 @@ def ContentBased(matrix,seen_matrix,likes_table,start_objects_dic,end_objects_di
     end_group = likes_table.end_group.iloc[0]
     timestamp = pd.Timestamp('')
 
+    # Producing the actual recommendations
+    ######################################
+
     # Table to stock recommendations
     recommended_table = pd.DataFrame(columns=['relation','start_group', 'start_object', 'end_group', 'end_object','value','timestamp'])
     counter = 0
@@ -39,7 +42,6 @@ def ContentBased(matrix,seen_matrix,likes_table,start_objects_dic,end_objects_di
             end_objects_dic
             recommended_table.loc[counter]=[relation_name,start_group,start_obj,end_group,end_objects_dic[pos],'',timestamp]
             counter+=1
-
     if verbose:
         VerboseMessage(verbose,'Content-Based Filtering computed in %s.'%(ETSec2ETTime(TCounter()-t)))
     return recommended_table,{};

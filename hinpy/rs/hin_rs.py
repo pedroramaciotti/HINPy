@@ -40,12 +40,10 @@ def HINRS(hin,relation_name,parameters,verbose=False):
         report_dic = {}
     # Explicit- SURPRISE-based RS
     elif parameters['method'] in ['UBCF','Z-UBCF','IBCF','SVD','NMF','CClustering']:
-
         table = hin.table[hin.table.relation==relation_name].copy(deep=True)
         predicted_table,report_dic = SurpriseBased(table,relation_name,parameters,verbose=verbose)
     # Content-based
     elif parameters['method']=='CB':
-
         like_table = hin.table[hin.table.relation==relation_name]
         seen_table = hin.table[hin.table.relation==parameters['seen_relation']]
         # Getting the ponderation of path stochastic matrices

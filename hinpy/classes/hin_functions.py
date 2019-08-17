@@ -12,6 +12,12 @@ def CheckTable(table):
     table['end_object']   =table['end_object'].astype(str)
     table['timestamp']    =table['timestamp'].astype(str).apply(lambda x: pd.Timestamp(x))
 
+    # dropping duplicates
+    n_rows = table.shape[0]
+    table.drop_duplicates(inplace=True)
+    if n_rows != table.shape[0]:
+        print('WARNING: Dataset had duplicated lines that were eliminated.')
+
     # Things to check (TODO)
     # - Conformity: that link groups (relations) have all links starting and ending in the same groups of objects
     # - No multi-link inside a link group (relation)
