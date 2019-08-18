@@ -7,6 +7,7 @@ from hinpy.rs.pure_popularity import *
 from hinpy.rs.content_based import *
 from hinpy.rs.surprise_based import *
 from hinpy.rs.random_rs import *
+from hinpy.rs.implicit_utility import *
 
 def HINRS(hin,relation_name,parameters,verbose=False):
     """
@@ -44,21 +45,16 @@ def HINRS(hin,relation_name,parameters,verbose=False):
         predicted_table,report_dic = SurpriseBased(table,relation_name,parameters,verbose=verbose)
     # Content-based
     elif parameters['method']=='CB':
-        like_table = hin.table[hin.table.relation==relation_name]
-        seen_table = hin.table[hin.table.relation==parameters['seen_relation']]
-        # Getting the ponderation of path stochastic matrices
-        for p in range(len(parameters['paths'])):
-            if p==0:
-                matrix = parameters['paths_weights'][p]*hin.GetPathStochasticMatrix(parameters['paths'][p])[:-1,:-1]
-            else:
-                matrix = matrix + parameters['paths_weights'][p]*hin.GetPathStochasticMatrix(parameters['paths'][p])[:-1,:-1]
-        matrix = matrix.tolil()
-        seen_matrix = hin.GetLinkGroup(parameters['seen_relation']).stochastic_matrix.tolil()
-        # Getting start and end object group position dictionaries
-        end_objects_dic = hin.GetLinkGroupEndObjectGroup(relation_name).OjectNameDicFromPosition()
-        start_objects_dic = hin.GetLinkGroupStartObjectGroup(relation_name).OjectNameDicFromPosition()
-        # Producing the recommendations
-        predicted_table,report_dic = ContentBased(matrix,seen_matrix,like_table,start_objects_dic,end_objects_dic,parameters,verbose=verbose)
+
+        # Producing utility metrics: precision, recall, F1
+        report_dic = ImplicitUtilityMetrics(hin,relation_name,parameters['seen_relation'],
+                                            parameters['paths'],parameters['paths_weights'],verbose=verbose)
+        # # Producing the recommendation
+        predicted_table = ContentBased(hin,
+                                        relation_name,parameters['seen_relation'],
+                                        parameters['paths'],parameters['paths_weights'],
+                                        parameters['topK_predictions'],
+                                        verbose=verbose)
     # Pure Popularity
     elif parameters['method']=='EPP':
         predicted_table,report_dic = ExplicitPurePopularity()

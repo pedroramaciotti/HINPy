@@ -20,7 +20,10 @@ hin.CreateLinkGroupFromLinkGroup(relation_name='rates',new_relation_name='likes'
 # What's the best strategy for HINPy?
 # - Separate actual RS and testing
 # - This means creating another method, elsewhere, that will use the CB RS
-# - Where? 
+# - Where? Normal functioning is:
+#    - one calls CreateLinkGroupFromRS, which calls HINRS and gives predicted table and metrics
+#    - report is what's used for surprise-based metrics
+#    - so it should be inside HINRS: yes, and then we only call ContentBased
 
 
 # create random df

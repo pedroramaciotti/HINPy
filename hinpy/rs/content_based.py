@@ -3,23 +3,40 @@ import numpy as np
 
 from time import time as TCounter
 
-from hinpy.general import *
+from hinpy.classes.hin_class import *
 
+def ContentBased(hin,relation_name,seen_relation,paths,paths_weights,topK,verbose=False):
 
-def ContentBased(matrix,seen_matrix,likes_table,start_objects_dic,end_objects_dic,parameters,verbose=False):
+    likes_table = hin.table[hin.table.relation==relation_name]
+    seen_table = hin.table[hin.table.relation==seen_relation]
 
     if verbose:
         t=TCounter()
         VerboseMessage(verbose,'Computing Content-Based Filtering of %s...'%(likes_table.relation.iloc[0]))
 
     # Retrieving names
-    relation_name = likes_table.relation.iloc[0]
     start_group = likes_table.start_group.iloc[0]
     end_group = likes_table.end_group.iloc[0]
     timestamp = pd.Timestamp('')
 
     # Producing the actual recommendations
     ######################################
+
+    # Producing the recommendation
+    
+    # Getting the ponderation of path stochastic matrices
+    for p in range(len(paths)):
+        if p==0:
+            matrix = paths_weights[p]*hin.GetPathStochasticMatrix(paths[p])[:-1,:-1]
+        else:
+            matrix = matrix + paths_weights[p]*hin.GetPathStochasticMatrix(paths[p])[:-1,:-1]
+    matrix = matrix.tolil()
+    seen_matrix = hin.GetLinkGroup(seen_relation).stochastic_matrix.tolil()
+    # Getting start and end object group position dictionaries
+    end_objects_dic = hin.GetLinkGroupEndObjectGroup(relation_name).OjectNameDicFromPosition()
+    start_objects_dic = hin.GetLinkGroupStartObjectGroup(relation_name).OjectNameDicFromPosition()
+
+
 
     # Table to stock recommendations
     recommended_table = pd.DataFrame(columns=['relation','start_group', 'start_object', 'end_group', 'end_object','value','timestamp'])
@@ -35,7 +52,7 @@ def ContentBased(matrix,seen_matrix,likes_table,start_objects_dic,end_objects_di
         # Delete those already seen by start object
         ordered_cols = ordered_cols[~np.isin(ordered_cols,seen_columns)]
         # Selecting topK end objects
-        ordered_cols = ordered_cols[:parameters['topK_predictions']]
+        ordered_cols = ordered_cols[:topK]
         # Get start object
         start_obj = start_objects_dic[row_id]
         for pos in ordered_cols:
@@ -44,4 +61,4 @@ def ContentBased(matrix,seen_matrix,likes_table,start_objects_dic,end_objects_di
             counter+=1
     if verbose:
         VerboseMessage(verbose,'Content-Based Filtering computed in %s.'%(ETSec2ETTime(TCounter()-t)))
-    return recommended_table,{};
+    return recommended_table;
