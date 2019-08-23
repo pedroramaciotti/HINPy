@@ -11,3 +11,7 @@ After you download the project, execute:
 in the parent folder. Equivalently, you can just execute:
 
 - `pip install git+https://github.com/pedroramaciott/HINPy`
+
+### To Do
+
+- Check performance of Random Walk Recommender after re-organization of functions.

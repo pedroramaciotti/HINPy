@@ -47,8 +47,15 @@ def HINRS(hin,relation_name,parameters,verbose=False):
     elif parameters['method']=='CB':
 
         # Producing utility metrics: precision, recall, F1
-        report_dic = ImplicitUtilityMetrics(hin,relation_name,parameters['seen_relation'],
-                                            parameters['paths'],parameters['paths_weights'],verbose=verbose)
+        if 'implicit_metrics' in parameters.keys():
+            if parameters['implicit_metrics']:
+                report_dic = ImplicitUtilityMetrics(hin,relation_name,parameters,verbose=verbose)
+                print('I used implicit accuracy!')
+                print(report_dic)
+            else:
+                report_dic = {}
+        else:
+            report_dic = {}
         # # Producing the recommendation
         predicted_table = ContentBased(hin,
                                         relation_name,parameters['seen_relation'],

@@ -179,6 +179,32 @@ class HIN:
                                                 verbose=verbose)
         return;
 
+    def CreateLinkGroupFromTable(self,new_table,new_relation_name=None,verbose=False):
+        # Check table for start/end group uniqueness and existence, check consistent relation name
+        if new_table.start_group.unique().size!=1 or new_table.end_group.unique().size!=1:
+            raise ValueError('Table has links between more than two object groups.')
+        # Get the group ids of the Link Group
+        og_start_name = new_table.start_group.iloc[0]
+        og_end_name = new_table.end_group.iloc[0]
+        og_start = self.GetObjectGroup(og_start_name)
+        og_end = self.GetObjectGroup(og_end_name)
+        subtable = new_table.copy(deep=True)
+        if new_relation_name is None:
+            relation_name = new_table.loc[:,'relation'].iloc[0]
+        else:
+            relation_name = new_relation_name
+            subtable.loc[:,'relation'] = new_relation_name
+        # Saving the new Link Group
+        self.table = self.table.append(subtable).reset_index(drop=True)
+        lg_id = self.GetNewLinkGroupID()
+        self.link_group_dic[lg_id] = LinkGroup(table=subtable,
+                                                name=relation_name,
+                                                id=lg_id,
+                                                start_og=og_start,
+                                                end_og=og_end,
+                                                verbose=verbose)
+        return;
+
     def CreateLinkGroupFromConfigurationModel(self,relation_name,new_relation_name,
                                     verbose=False):
         # Get the group ids of the Link Group
