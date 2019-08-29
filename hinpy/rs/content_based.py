@@ -23,7 +23,7 @@ def ContentBased(hin,relation_name,seen_relation,paths,paths_weights,topK,verbos
     ######################################
 
     # Producing the recommendation
-    
+
     # Getting the ponderation of path stochastic matrices
     for p in range(len(paths)):
         if p==0:
