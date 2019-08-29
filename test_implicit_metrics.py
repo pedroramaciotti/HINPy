@@ -1,5 +1,6 @@
 import hinpy
 
+import matplotlib.pyplot as plt
 
 import pandas as pd
 import numpy as np
@@ -25,7 +26,7 @@ params = {'method':'CB', 'topK_predictions': 4, 'seen_relation':'rates',
           'paths':[['likes','inverse_likes','likes']], 
           'paths_weights':[1],
           'implicit_metrics':True,
-          'implicit_metrics_N':[5,10,15,20,25,30],
+          'implicit_metrics_N':[1,2,3,4,5,6,7,8,9,10,15,17,20],
 #          'implicit_metrics_N':[5],
           'implicit_metrics_fraction':0.1,
           'test_control':0}
@@ -41,7 +42,7 @@ ax=fig.add_subplot(1,1,1)
 ax.plot(params['implicit_metrics_N'],hin.GetLinkGroup('CB-recos').info['recall'])
 ax.plot(params['implicit_metrics_N'],hin.GetLinkGroup('CB-recos').info['precision'])
 ax.plot(params['implicit_metrics_N'],hin.GetLinkGroup('CB-recos').info['f1'])
-ax.legends(['recall','precision','f1'])
+ax.legend(['recall','precision','f1'])
 ax.set_title('Implicit accuracy metrics (test %.2f of links)'%(params['implicit_metrics_fraction']))
 ax.set_xlabel('List size')
 ax.set_xlabel('Accuracy')
