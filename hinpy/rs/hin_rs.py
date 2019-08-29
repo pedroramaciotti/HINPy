@@ -49,7 +49,7 @@ def HINRS(hin,relation_name,parameters,verbose=False):
         # Producing utility metrics: precision, recall, F1
         if 'implicit_metrics' in parameters.keys():
             if parameters['implicit_metrics']:
-                report_dic,_,_,_,_ = ImplicitUtilityMetrics(hin,relation_name,parameters,verbose=verbose)
+                report_dic = ImplicitUtilityMetrics(hin,relation_name,parameters,verbose=verbose)
             else:
                 report_dic = {}
         else:
