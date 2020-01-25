@@ -62,8 +62,14 @@ def ImplicitUtilityMetrics(hin,relation_name,parameters,verbose=False):
 		for idx,row in q.iterrows():
 			Tu = set(test_subtable[test_subtable.start_object==row.object].end_object)
 			Lu = set(train_reco_subtable[train_reco_subtable.start_object==row.object].end_object)
-			q.loc[idx,'recall'] = len(Tu&Lu)/len(Tu)
-			q.loc[idx,'precision'] = len(Tu&Lu)/len(Lu)
+			if len(Lu)>0:
+				q.loc[idx,'precision'] = len(Tu&Lu)/len(Lu)
+			else:
+				q.loc[idx,'precision'] = 0
+			if len(Tu)>0:
+				q.loc[idx,'recall'] = len(Tu&Lu)/len(Tu)
+			else:
+				q.loc[idx,'recall'] = 0
 		precision[i] = q['precision'].mean()
 		recall[i] = q['recall'].mean()
 		f1[i] = 2*precision[i]*recall[i]/(precision[i]+recall[i])

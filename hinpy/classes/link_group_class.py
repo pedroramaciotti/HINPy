@@ -55,7 +55,7 @@ class LinkGroup():
         self.end_id    = end_og.id
         self.size = table.shape[0]
         if compute_stochastic_matrix:
-            self.stochastic_matrix = StochasticMatrix(table, start_og, end_og)
+            self.stochastic_matrix = StochasticMatrix(table, start_og, end_og,verbose=verbose)
         else:
             self.stochastic_matrix = None
         VerboseMessage(verbose,'Link Group %s built in %s.'%(name,ETSec2ETTime(TCounter()-t)))

@@ -37,7 +37,9 @@ class HIN:
             table=pd.read_csv(filename,sep=',',header=None,names=columns,low_memory=False)
             VerboseMessage(verbose,'Table read in %s.'%ETSec2ETTime(TCounter()-t))
         # Cheking the table
+        t=TCounter()
         table = CheckTable(table)
+        VerboseMessage(verbose,'Table checked in %s.'%ETSec2ETTime(TCounter()-t))
 
         # TODO: Aggregation of multi edges: None, Average, Sum
 
@@ -47,8 +49,12 @@ class HIN:
         self.info = {}
 
         # Building Object and Link Groups from Table
+        t=TCounter()
         self.ReBuildObjectGroupsFromTable(verbose)
+        VerboseMessage(verbose,'Object Groups built in %s.'%ETSec2ETTime(TCounter()-t))
+        t=TCounter()
         self.ReBuildLinkGroupsFromTable(verbose)
+        VerboseMessage(verbose,'Link Groups built in %s.'%ETSec2ETTime(TCounter()-t))
 
         if inverse_relations:
             for relation_name in self.table.relation.unique():

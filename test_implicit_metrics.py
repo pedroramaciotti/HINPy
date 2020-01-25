@@ -26,9 +26,9 @@ params = {'method':'CB', 'topK_predictions': 4, 'seen_relation':'rates',
           'paths':[['likes','inverse_likes','likes']], 
           'paths_weights':[1],
           'implicit_metrics':True,
-          'implicit_metrics_N':[1,2,3,4,5,6,7,8,9,10,15,17,20],
+          'implicit_metrics_N':[1,2,3,4,5,6,7,8,9,10,15,17],
 #          'implicit_metrics_N':[5],
-          'implicit_metrics_fraction':0.1,
+          'implicit_metrics_fraction':0.25,
           'test_control':0}
 
 
@@ -47,6 +47,6 @@ ax.set_title('Implicit accuracy metrics (test %.2f of links)'%(params['implicit_
 ax.set_xlabel('List size')
 ax.set_xlabel('Accuracy')
 plt.tight_layout()
-plt.savefig('testing_implicit_metrics.pdf', format='pdf')
+plt.savefig('testing_implicit_metrics_%.2f.pdf'%params['implicit_metrics_fraction'], format='pdf')
 plt.clf()
 plt.close()

@@ -27,10 +27,11 @@ class ObjectGroup:
         self.name = name
         self.info = {}
         self.id   = id
+        self.object_list = object_list
         self.size = len(object_list)
         self.objects_ids_queue = list(range(self.size))
-        self.objects_names  = {}
-        self.objects_ids  = {}
+        self.objects_names  = {} # dictionary taking ids and giving object name
+        self.objects_ids  = {} # dictionary taking object name and giving idi
         for object_id in self.objects_ids_queue:
             self.objects_names[object_id] = object_list[object_id]
             self.objects_ids[object_list[object_id]] = object_id
