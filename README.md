@@ -1,4 +1,4 @@
-![Image of Yaktocat](https://github.com/pedroramaciotti/HINPy/blob/master/docs/logo.pdf)
+![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
 # HINPy 
 
 ## Heterogeneous Information Networks for Python
