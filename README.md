@@ -1,4 +1,4 @@
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/logo.png)
 # HINPy 
 
 ## Heterogeneous Information Networks for Python
@@ -18,3 +18,8 @@ in the parent folder. Equivalently, you can just execute:
 ### To Do
 
 - Check performance of Random Walk Recommender after re-organization of functions.
+
+### Quickstart
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/example.png)
+
