@@ -105,3 +105,6 @@ venv.bak/
 
 # Heavy Dataset
 /datasets/douban_book_hin.csv
+
+# DS_Store
+.DS_Store

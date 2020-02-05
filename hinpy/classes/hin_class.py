@@ -185,6 +185,28 @@ class HIN:
                                                 verbose=verbose)
         return;
 
+    def CreateLinkGroupFromLinkGroupWithDates(self,relation_name,new_relation_name,limit_dates,
+                                    verbose=False):
+        # Get the group ids of the Link Group
+        og_start = self.object_group_dic[self.GetLinkGroup(relation_name).start_id]
+        og_end  = self.object_group_dic[self.GetLinkGroup(relation_name).end_id]
+        # Getting subtable of the Link Group
+        subtable=self.table[self.table.relation==relation_name].copy(deep=True)
+        # Applyting the condition
+        subtable=subtable[(subtable.timestamp>=pd.Timestamp(limit_dates['min']))&(subtable.timestamp<=pd.Timestamp(limit_dates['max']))]
+        # Changing name
+        subtable.loc[:,'relation'] = new_relation_name
+        # Saving the new Link Group
+        self.table = self.table.append(subtable).reset_index(drop=True)
+        lg_id = self.GetNewLinkGroupID()
+        self.link_group_dic[lg_id] = LinkGroup(table=subtable,
+                                                name=subtable.relation.iloc[0],
+                                                id=lg_id,
+                                                start_og=og_start,
+                                                end_og=og_end,
+                                                verbose=verbose)
+        return;
+
     def CreateLinkGroupFromTable(self,new_table,new_relation_name=None,verbose=False):
         # Check table for start/end group uniqueness and existence, check consistent relation name
         if new_table.start_group.unique().size!=1 or new_table.end_group.unique().size!=1:

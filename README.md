@@ -1,6 +1,8 @@
-# HINPy (Heterogeneous Information Networks for Python)
+# HINPy 
 
-A framework for the analysis of diversity of recommendations in Heterogeneous Information Networks for Python.
+## Heterogeneous Information Networks for Python
+
+A framework for the extracting metrical, hilbertian and probability space structures from topological models.
 
 
 ### Installation
