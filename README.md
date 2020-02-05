@@ -1,8 +1,9 @@
+![Image of Yaktocat](https://github.com/pedroramaciotti/HINPy/blob/master/docs/logo.pdf)
 # HINPy 
 
 ## Heterogeneous Information Networks for Python
 
-A framework for the extracting metrical, hilbertian and probability space structures from topological models.
+A framework for the extracting metrical, hilbertian, and probability space structures from topological models.
 
 
 ### Installation
