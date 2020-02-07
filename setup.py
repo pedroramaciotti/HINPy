@@ -1,4 +1,4 @@
-"""`setup.py` file of stream_graph"""
+"""`setup.py`"""
 from setuptools import setup, find_packages
 
 # Package requirements
@@ -7,8 +7,8 @@ with open('requirements.txt') as f:
 
 setup(name='hinpy',
       version='0.1',
-      description='A framework for the analysis of diversity of recommendations in Heterogeneous Information Networks.',
-      author='Pedro Ramaciotti Morales [LIP6]',
-      author_email='Yiannis.Siglidis@lip6.fr',
+      description='A framework for the analysis of diversity in Heterogeneous Information Networks.',
+      author='Pedro Ramaciotti Morales',
+      author_email='pedro.ramaciotti@gmail.com',
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES)

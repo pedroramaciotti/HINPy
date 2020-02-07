@@ -17,8 +17,6 @@ in the parent folder. Equivalently, you can just execute:
 
 ### Quickstart
 
-
-
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/example.png)
 
 File (available in *datasets*):

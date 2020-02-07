@@ -26,6 +26,13 @@ def CheckTable(table):
 
 def CheckPath(relation_list):
 
+    # Checking that object is list
+    if not isinstance(relation_list, list):
+        raise TypeError('Argument is not a list.')
+    # Checking that elements of list are names
+    for e in relation_list:
+        if not type(e) == str:
+            raise TypeError('An element of the path list are not string.')
     # TODO: Check conformity of the path
 
     return relation_list;

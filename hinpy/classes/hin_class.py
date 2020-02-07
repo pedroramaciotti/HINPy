@@ -66,6 +66,8 @@ class HIN:
     # Functions Changing Link Groups          #
     ###########################################
 
+    # TODO: re-organize and move to link_group_functions
+
     def CreateInverseLinkGroup(self,existing_relation_name,new_relation_name=None,verbose=False):
         # Checking that the relation exists
         if existing_relation_name not in self.table.relation.unique():
@@ -316,6 +318,8 @@ class HIN:
     # HIN and Group Property Retrievers #
     #####################################
 
+    # TODO: re-organize and move to hin_functions
+
     # Get groups
     def GetObjectGroup(self,name):
         for og_id,og in self.object_group_dic.items():
@@ -373,7 +377,18 @@ class HIN:
     # Path Proportional Abundances & Diversities #
     ##############################################
 
-    # TODO: change to accept a probability distribution as input
+    def matrix(self,path):
+        path=CheckPath(relation_list)
+        matrix=self.GetLinkGroup(path[0]).stochastic_matrix
+        for relation in path[1:]:
+            matrix=matrix*self.GetLinkGroup(relation).stochastic_matrix
+        return matrix
+
+
+
+
+
+    # THESE ARE LEGACY FUNCTIONS (to be removed)
 
     def GetPathStochasticMatrix(self,relation_list):
         path=CheckPath(relation_list)
