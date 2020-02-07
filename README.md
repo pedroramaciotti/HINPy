@@ -17,9 +17,33 @@ in the parent folder. Equivalently, you can just execute:
 
 ### Quickstart
 
+#### A simple example
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/simple_example.png)
+
+File available in *datasets* as simple_example.csv
+
+    likes,user,u1,item,i1,,
+    likes,user,u1,item,i2,,
+    likes,user,u2,item,i3,,
+    likes,user,u3,item,i4,,
+    likes,user,u3,item,i5,,
+    recommended,user,u1,item,i3,,
+    recommended,user,u2,item,i1,,
+    recommended,user,u2,item,i4,,
+    recommended,user,u3,item,i2,,
+    recommended,user,u3,item,i3,,
+    classification,item,i1,type,t1,,
+    classification,item,i2,type,t2,,
+    classification,item,i4,type,t2,,
+    classification,item,i4,type,t3,,
+    classification,item,i5,type,t3,,
+
+#### A second example
+
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/example.png)
 
-File (available in *datasets*):
+File available in *datasets* as example.csv:
 
     E0,V0,v01,V2,v11,,
     E0,V0,v02,V2,v12,,
