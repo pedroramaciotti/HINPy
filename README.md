@@ -2,7 +2,11 @@
 
 ## HINPy: Heterogeneous Information Networks for Python
 
-A framework for the extracting metrical, hilbertian, and probability space structures from topological models.
+**In short:** HINPy is a python workbench for Heterogeneous Information Networks (graphs with colored nodes and edges) suited for the analysis of Recommender Systems (accuracy, diversity, similarity), and network representation in other domains (e.g, ecology, scientometrics, social network analysis).
+
+HINPy is a framework that gives a flexible ontology to topological data (entities of different type connected/related by different relations), and allows for the extraction of metrical (similarities, distances), hilbertian (embedding in spaces with relative order), and bayesian (empirical distributions and apportionments) structures.
+
+It also provides [experimental] functionalities to perform recommendations using classic Recommender Systems, and evaluate recommendations with classic diversity metrics.
 
 
 ### Installation
@@ -16,6 +20,31 @@ in the parent folder. Equivalently, you can just execute:
 
 
 ### Quickstart
+
+#### Syntax
+
+You can name related entities in lines in a CSV file as:
+
+`relation_name,group_of_entity1,name_of_entity1,group_of_entity2,name_of_entity2,some_value,timestamp`.
+
+Values (some_value) and timestamps are optional (in case you want to do some filtering or timeseries). In a Recommender Systems setting, for example, you can name your entities and relations as:
+
+    has_chosen,users,user1,items,item1,5.0,1990
+    has_chosen,users,user1,items,item2,3.0,1991
+    ...
+    was_recommended,user1,items,item4,,
+    ...
+    is_of_type,items,i1,type,t1,,
+    ...
+
+if you want to declared users that chose/ranked some items (e.g., films) at some time, and items that belong to categories (e.g., genres).
+
+You can then load your CSV (without header nor index):
+
+    import hinpy 
+
+    hin = hinpy.classes.HIN(filename=path_to_your_csv_file)
+
 
 #### A simple example
 

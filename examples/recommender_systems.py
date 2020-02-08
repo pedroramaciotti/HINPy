@@ -1,38 +1,8 @@
-
-
 import hinpy
-
 
 import pandas as pd
 import numpy as np
-pd.options.mode.chained_assignment = "raise"
 
-
-# Format of the dataset
-#
-# COLUMNS:
-# link grou name
-# start object group
-# start object
-# end object group
-# end object
-# value associated to the link (score, rating)
-
-#
-# Examples
-#
-#
-# is_friend,user,u1,user,u2,
-# is friend,user,u2,user,u3
-# rates,user,u1,item,i1,4
-# rates,user,u1,item,i2,4
-# rates,user,u2,item,i2,3
-# rates,user,u3,item,i3,5
-# has_type,item,i1,type,t1
-# has_type,item,i1,type,t2
-# has_type,item,i2,type,t2
-# has_type,item,i3,type,t3
-#
 
 # Loading the dataset
 hin = hinpy.classes.HIN(name='m100k',filename='datasets/movielens100k_hin.csv',inverse_relations=True)
