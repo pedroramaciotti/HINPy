@@ -4,10 +4,11 @@
 
 **In short:** HINPy is a python workbench for Heterogeneous Information Networks (graphs with colored nodes and edges) suited for the analysis of Recommender Systems (accuracy, diversity, similarity), and network representation in other domains (e.g, ecology, scientometrics, social network analysis).
 
-HINPy is a framework that gives a flexible ontology to topological data (entities of different type connected/related by different relations), and allows for the extraction of metrical (similarities, distances), hilbertian (embedding in spaces with relative order), and bayesian (empirical distributions and apportionments) structures.
+**In long[er]:**HINPy is a framework that provides a flexible ontology to topological data (entities of different type connected/related by different relations), and allows for the extraction of metrical (similarities, distances), hilbertian (embedding in spaces with relative order), and bayesian (empirical distributions and apportionments) structures.
 
 It also provides [experimental] functionalities to perform recommendations using classic Recommender Systems, and evaluate recommendations with classic diversity metrics.
 
+Also experimental is the extraction of timeseries of apportionments and aggregations such as diversity measures.
 
 ### Installation
 After you download the project, execute:
@@ -46,33 +47,35 @@ You can then load your CSV (without header nor index):
     hin = hinpy.classes.HIN(filename=path_to_your_csv_file)
 
 
+*The remainder of this README is under construction...*
+
 #### A simple example
 
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/simple_example.png)
 
-File available in *datasets* as simple_example.csv
+File available in *datasets* as `simple_example.csv`:
 
-    likes,user,u1,item,i1,,
-    likes,user,u1,item,i2,,
-    likes,user,u2,item,i3,,
-    likes,user,u3,item,i4,,
-    likes,user,u3,item,i5,,
-    recommended,user,u1,item,i3,,
-    recommended,user,u2,item,i1,,
-    recommended,user,u2,item,i4,,
-    recommended,user,u3,item,i2,,
-    recommended,user,u3,item,i3,,
-    classification,item,i1,type,t1,,
-    classification,item,i2,type,t2,,
-    classification,item,i4,type,t2,,
-    classification,item,i4,type,t3,,
-    classification,item,i5,type,t3,,
+    E0,V0,u1,V1,i1,,
+    E0,V0,u1,V1,i2,,
+    E0,V0,u2,V1,i3,,
+    E0,V0,u3,V1,i4,,
+    E0,V0,u3,V1,i5,,
+    E1,V0,u1,V1,i3,,
+    E1,V0,u2,V1,i1,,
+    E1,V0,u2,V1,i4,,
+    E1,V0,u3,V1,i2,,
+    E1,V0,u3,V1,i3,,
+    E2,V1,i1,V2,t1,,
+    E2,V1,i2,V2,t2,,
+    E2,V1,i4,V2,t2,,
+    E2,V1,i4,V2,t3,,
+    E2,V1,i5,V2,t3,,
 
 #### A second example
 
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/example.png)
 
-File available in *datasets* as example.csv:
+File available in *datasets* as `example.csv`:
 
     E0,V0,v01,V2,v11,,
     E0,V0,v02,V2,v12,,
@@ -96,3 +99,16 @@ File available in *datasets* as example.csv:
     E5,V1,v11,V5,v51,,
     E5,V1,v12,V5,v52,,
     E5,V1,v12,V5,v53,,
+
+#### Producing and evaluating recommendations
+
+Upcoming section. You can take a peek in the *examples* folder.
+
+#### Time series
+
+Upcoming section.
+
+#### Applications in other domains
+
+Upcoming section.
+
