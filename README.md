@@ -10,6 +10,10 @@ It also provides [experimental] functionalities to perform recommendations using
 
 Also experimental is the extraction of timeseries of apportionments and aggregations such as diversity measures.
 
+Most definitions and computations are taken from:
+
+Ramaciotti Morales, Pedro, Robin Lamarche-Perrin, Raphael Fournier-S'niehotta, Remy Poulain, Lionel Tabourier, and Fabien Tarissan. **Measuring Diversity in Heterogeneous Information Networks.** arXiv (2020): arXiv-2001.
+
 ### Installation
 After you download the project, execute:
 
