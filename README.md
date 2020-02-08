@@ -4,7 +4,7 @@
 
 **In short:** HINPy is a python workbench for Heterogeneous Information Networks (graphs with colored nodes and edges) suited for the analysis of Recommender Systems (accuracy, diversity, similarity), and network representation in other domains (e.g, ecology, scientometrics, social network analysis).
 
-**In long[er]:**HINPy is a framework that provides a flexible ontology to topological data (entities of different type connected/related by different relations), and allows for the extraction of metrical (similarities, distances), hilbertian (embedding in spaces with relative order), and bayesian (empirical distributions and apportionments) structures.
+HINPy is a framework that provides a flexible ontology to topological data (entities of different type connected/related by different relations), and allows for the extraction of metrical (similarities, distances), hilbertian (embedding in spaces with relative order), and bayesian (empirical distributions and apportionments) structures.
 
 It also provides [experimental] functionalities to perform recommendations using classic Recommender Systems, and evaluate recommendations with classic diversity metrics.
 
@@ -50,6 +50,8 @@ You can then load your CSV (without header nor index):
 *The remainder of this README is under construction...*
 
 #### A simple example
+
+Let us consider nodes in object group $V_0$
 
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/simple_example.png)
 

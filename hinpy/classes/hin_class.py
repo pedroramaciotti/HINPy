@@ -3,6 +3,8 @@ import numpy as np
 
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats.mstats import gmean
+from sklearn.preprocessing import normalize
+
 
 from time import time as TCounter
 
@@ -377,18 +379,71 @@ class HIN:
     # Path Proportional Abundances & Diversities #
     ##############################################
 
-    def matrix(self,path):
-        path=CheckPath(relation_list)
+    def stochastic_matrix(self,path):
+        path=CheckPath(path)
         matrix=self.GetLinkGroup(path[0]).stochastic_matrix
         for relation in path[1:]:
             matrix=matrix*self.GetLinkGroup(relation).stochastic_matrix
-        return matrix
+        return matrix;
 
+    def proportional_abundance(self,path,initial_p=None,include_sink=False):
+        path=CheckPath(path)
+        # Compute stochastic matrix for the path
+        matrix = self.stochastic_matrix(path)
+        # Get size of the start object group
+        start_og = self.object_group_dic[self.GetLinkGroup(path[0]).start_id]
+        if initial_p is not None:
+            p=initial_p
+        else:
+            p=np.ones(start_og.size)
+        p=p/p.sum()
+        p=np.append(p,[0]) #<- probability of starting at sink = 0
+        pa = matrix.T.dot(p)
+        if include_sink:
+            return pa;
+        else:
+            return pa[:-1]/pa[:-1].sum();
 
+    def proportional_abundances(self,path,include_sink=False):
+        path=CheckPath(path)
+        matrix=self.stochastic_matrix(path)
+        if include_sink:
+            return matrix;
+        else:
+            matrix=matrix[:-1,:-1]
+            return normalize(matrix,norm='l1',axis=1);#<- if all mass went to sink pa=0
+
+    def individual_diversities(self,path,alpha=1.0,include_sink=False):
+        path=CheckPath(path)
+        pas = self.proportional_abundances(path,include_sink=include_sink).tolil()
+        diversities=[]
+        for p in pas:
+            if np.abs(p.sum()-1.0)<1e-6:
+                diversities.append(TrueDiversity(p,alpha))
+        return np.array(diversities);
+
+    def mean_diversity(self,path,alpha=1.0,include_sink=False,method='arithmetic'):
+        path=CheckPath(path)
+        diversities = self.individual_diversities(path,alpha=alpha,include_sink=include_sink)
+        # Computing the mean
+        if method=='arithmetic':
+            return diversities.mean()
+        elif method=='geo':
+            return gmean(diversities)
+        elif method=='wpm':
+            raise ValueError('Weighted Power Mean Method not implemented yet.')
+
+    def collective_diversity(self,path,alpha=1.0,include_sink=False):
+        path=CheckPath(path)
+        p=self.proportional_abundance(path,include_sink=include_sink)
+        if np.abs(p.sum()-0.0)<1e-6:
+            raise ValueError('All mass was in the sink.')
+        return TrueDiversity(p,alpha);
 
 
 
     # THESE ARE LEGACY FUNCTIONS (to be removed)
+    #######################################################
 
     def GetPathStochasticMatrix(self,relation_list):
         path=CheckPath(relation_list)

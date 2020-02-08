@@ -45,8 +45,7 @@ def HHI(P,renormalize=False):# Herfindahl-Hirschman Index
 
 def GiniIndex(P,renormalize=False):
     # (Warning: This is a concise implementation, but it is O(n**2)
-    # in time and memory, where n = len(x).  *Don't* pass in huge
-    # samples!)
+    # in time and memory, where n = len(x).  
     # Convert, check.
     P=np.array(P)
     CheckDistribution(P)
