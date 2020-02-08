@@ -46,16 +46,13 @@ You can then load your CSV (without header nor index):
 
     hin = hinpy.classes.HIN(filename=path_to_your_csv_file)
 
-
-*The remainder of this README is under construction...*
-
 #### A simple example
 
-Let us consider nodes in object group $V_0$
+Let us consider entities organized in three object groups, connected with edges organized in three link groups:
 
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/simple_example.png)
 
-File available in *datasets* as `simple_example.csv`:
+The corresponfing file (available in *datasets* as `simple_example.csv`) would like something like this:
 
     E0,V0,u1,V1,i1,,
     E0,V0,u1,V1,i2,,
@@ -72,6 +69,30 @@ File available in *datasets* as `simple_example.csv`:
     E2,V1,i4,V2,t2,,
     E2,V1,i4,V2,t3,,
     E2,V1,i5,V2,t3,,
+
+First, load the file:
+
+    import hinpy
+    hin = hinpy.class.HIN(filename='simple_example.csv')
+
+Say for example that E0 contains past choices of users in V0 of items in V1, and that item can be associated with categories or types in V2. If E1 contains recommendations made to users, we can measure
+
+-- the mean type diversity of items chosen (E0) by users:
+
+    >>> hin.mean_diversity(['E0','E2'],alpha=2.0) # Herfindahl Diversity (alpha=2)
+    1.8
+
+-- for comparison, the mean type diversity of items recommended (E1) to users:
+
+    >>> hin.mean_diversity(['E1','E2'],alpha=2.0)
+    1.8333333333333333
+
+-- which might be also compared with the collective type diversity of items chosen by users:
+
+    >>> hin.collective_diversity(['E0','E2'],alpha=2.0)
+    2.909090909090909
+
+*The remainder of this README is under construction...*
 
 #### A second example
 

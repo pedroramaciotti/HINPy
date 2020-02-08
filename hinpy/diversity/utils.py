@@ -1,7 +1,7 @@
 import numpy as np
 
 def CheckDistribution(P):
-    if np.abs(P.sum()-1)>1e-8:
+    if np.abs(np.sum(P)-1)>1e-6:
         raise ValueError('P does not sume 1 (sum=%f)'%P.sum())
     if P[0>P].size!=0:
         raise ValueError('Some elements of P are negative.')

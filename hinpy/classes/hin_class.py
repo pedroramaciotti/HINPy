@@ -415,10 +415,10 @@ class HIN:
 
     def individual_diversities(self,path,alpha=1.0,include_sink=False):
         path=CheckPath(path)
-        pas = self.proportional_abundances(path,include_sink=include_sink).tolil()
+        pas = self.proportional_abundances(path,include_sink=include_sink).tolil().data
         diversities=[]
         for p in pas:
-            if np.abs(p.sum()-1.0)<1e-6:
+            if np.abs(np.sum(p)-1.0)<1e-6:
                 diversities.append(TrueDiversity(p,alpha))
         return np.array(diversities);
 

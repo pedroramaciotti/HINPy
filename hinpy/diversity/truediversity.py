@@ -5,7 +5,7 @@ def TrueDiversity(P,alpha,renormalize=False):
     # Convert, check, trim, and renormalize
     P=np.array(P)
     CheckDistribution(P)
-    P=TrimDistribution(P)
+    # P=TrimDistribution(P)
     if renormalize:
         P=RenormalizeDistribution(P)
     # Computing the True Diversity
