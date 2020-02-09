@@ -83,18 +83,18 @@ Say for example that E0 contains past choices of users in V0 of items in V1, and
 
 -- the mean type diversity of items chosen (E0) by users:
 
-    >>> hin.mean_diversity(['E0','E2'],alpha=2.0) # Herfindahl Diversity (alpha=2)
-    1.8
+    hin.mean_diversity(['E0','E2'],alpha=2.0) # Herfindahl Diversity (alpha=2)
+    >>> 1.8
 
 -- for comparison, the mean type diversity of items recommended (E1) to users:
 
-    >>> hin.mean_diversity(['E1','E2'],alpha=2.0)
-    1.8333333333333333
+    hin.mean_diversity(['E1','E2'],alpha=2.0)
+    >>> 1.8333333333333333
 
 -- which might be also compared with the collective type diversity of items chosen by users:
 
-    >>> hin.collective_diversity(['E0','E2'],alpha=2.0)
-    2.909090909090909
+    hin.collective_diversity(['E0','E2'],alpha=2.0)
+    >>> 2.909090909090909
 
 *The remainder of this README is under construction...*
 
