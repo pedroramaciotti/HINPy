@@ -110,20 +110,22 @@ So, in this case, 25% chances of ending in t1, 37.5% for t2 and t3.
 
 You can compute transpose (*inversed*) meta paths to include in computations 
 
-    hin = hinpy.class.HIN(filename='simple_example.csv')
+    hin = hinpy.class.HIN(filename='simple_example.csv',inverse_relations=True)
 
-and then used them apportionments and computations:
+and then used them apportionments and computations (it automatically add the prefix *inverse_*):
 
     hin.proportional_abundance(['inverse_E2','inverse_E0'])
     >>> array([0. , 0.5, 0.5])
 
-If you want to use a different diversity measure (different from True Diversity, which are those used by default, *check the article*), one can do as you like. Let's use Gini, or Herfindahl-Hirschmann Index
+If you want to use a different diversity measures (different from True Diversity, which are those used by default, *check the article*), you can do as you like. Let's use Gini, or Herfindahl-Hirschmann Index:
 
     pa = hin.proportional_abundance(['E0','E2']) # this was [0.375, 0.375, 0.25 ]
     hinpy.diversity.GiniIndex(pa)
     >>> 0.3333333333333333
     hinpy.diversity.HHI(pa) # Herfindahl-Hirschmann Index
     >>> 0.34375
+
+Once you have a distribution, you do whatever you want with it.
 
 *The remainder of this README is under construction...*
 
