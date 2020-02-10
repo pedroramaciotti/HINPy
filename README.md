@@ -170,5 +170,27 @@ Upcoming section.
 
 #### Applications in other domains
 
-Upcoming section.
+This framework might be useful in many domains besides Recommender Systems. 
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/applications/simple_rs.png)
+
+Feel free to use it in social network analysis and computational social sciences
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/applications/social_networks.png)
+
+in ecology
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/applications/ecology.png)
+
+in comptetion law and antitrust
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/applications/antitrust.png)
+
+or in scientometrics
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/applications/scientometrics.png)
+
+among many others.
+
+
 
