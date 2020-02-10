@@ -117,13 +117,15 @@ and then used them apportionments and computations (it automatically add the pre
     hin.proportional_abundance(['inverse_E2','inverse_E0'])
     >>> array([0. , 0.5, 0.5])
 
-If you want to use a different diversity measures (different from True Diversity, which are those used by default, *check the article*), you can do as you like. Let's use Gini, or Herfindahl-Hirschmann Index:
+If you want to use a different diversity measures (different from True Diversity, which are those used by default, *check the article*), you can do as you like. Let's use Gini, or Herfindahl-Hirschmann Index (HHI):
 
     pa = hin.proportional_abundance(['E0','E2']) # this was [0.375, 0.375, 0.25 ]
     hinpy.diversity.GiniIndex(pa)
     >>> 0.3333333333333333
     hinpy.diversity.HHI(pa) # Herfindahl-Hirschmann Index
     >>> 0.34375
+
+Note that 0.34375 is the reciprocal of the collective E0-E2 Herfindahl (alpha=2) diversity. HHI measures concentration, the inverse of diversity.
 
 Once you have a distribution, you do whatever you want with it.
 
