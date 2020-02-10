@@ -96,6 +96,35 @@ Say for example that E0 contains past choices of users in V0 of items in V1, and
     hin.collective_diversity(['E0','E2'],alpha=2.0)
     >>> 2.909090909090909
 
+One can also measure apportionments along paths in the network schema (*meta paths*). For example:
+
+    hin.proportional_abundance(['E0','E2'])
+    >>> array([0.375, 0.375, 0.25 ])
+
+To see what probability corresponds to which entities you can check to dictionnary of the object group where your path ends (E2), V2:
+
+    hin.GetObjectGroup('V2').objects_ids
+    >>> {'t3': 0, 't2': 1, 't1': 2}
+
+So, in this case, 25% chances of ending in t1, 37.5% for t2 and t3.
+
+You can compute transpose (*inversed*) meta paths to include in computations 
+
+    hin = hinpy.class.HIN(filename='simple_example.csv')
+
+and then used them apportionments and computations:
+
+    hin.proportional_abundance(['inverse_E2','inverse_E0'])
+    >>> array([0. , 0.5, 0.5])
+
+If you want to use a different diversity measure (different from True Diversity, which are those used by default, *check the article*), one can do as you like. Let's use Gini, or Herfindahl-Hirschmann Index
+
+    pa = hin.proportional_abundance(['E0','E2']) # this was [0.375, 0.375, 0.25 ]
+    hinpy.diversity.GiniIndex(pa)
+    >>> 0.3333333333333333
+    hinpy.diversity.HHI(pa) # Herfindahl-Hirschmann Index
+    >>> 0.34375
+
 *The remainder of this README is under construction...*
 
 #### A second example
