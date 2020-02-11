@@ -160,13 +160,65 @@ File available in *datasets* as `example.csv`:
     E5,V1,v12,V5,v52,,
     E5,V1,v12,V5,v53,,
 
+#### Time series
+
+If you included information in the *timestamp* column, you can create new groups of edges (link groups) base on time windows. This allows you to create time series. For the time being this is a bit cumbersome.
+
+Let us take the example file *movielens100k_hin.csv* (found in the *datasets* folder). This is a classic dataset in Recommender Systems, containing information on people rating films between 1997 and 1998.
+
+    import hinpy
+    import numpy
+    import calendar
+
+    hin = hinpy.classes.HIN(filename='movielens100k_hin.csv')
+
+Let us check the link groups it contains:
+
+    hin.GetLinkGroupsNames()
+    >>> ['is_of_type','was_released','rates','has_occupation','has_age','has_gender','is_located']
+
+... and its object groups:
+
+    hin.GetObjectGroupsNames()
+    >>> ['age','occupation','genre','zip_code','user','movie','gender','release']
+
+A lot of information. Let us focus on users that rate movies that have a genre. The link group called *rates*, has timestamps. In the next piece of code we iterate through months to make a temporal series of genre diversity of movies rated by users:
+
+    months =  [(9,1997),(10,1997),(11,1997),(12,1997),(1,1998),(2,1998),(3,1998),(4,1998)]
+    N_genres = hin.GetObjectGroup('genre').size # there are 19 film genres
+
+    collective_diversity = [] # <- time series
+    mean_diversity = [] # <- time series
+    collective_pa = np.zeros((N_genres,len(months))) # <- apportionment time series
+
+    for i,(month,year) in enumerate(months):
+        # we give first and last days to define a timewindow
+        first_day = '%d-%d-%d'%(year,month,1)
+        last_day  = '%d-%d-%d'%(year,month,calendar.monthrange(year,month)[1])
+        window = {'min':first_day,'max':last_day,}
+        # then create a new link group using "rates"
+        hin.CreateLinkGroup(linkgroup='rates',name='monthly_activity',datetimes=window)
+        # then we compute proportional abundance, and diversities
+        collective_diversity.append(hin.collective_diversity(['monthly_activity','is_of_type'],alpha=2.0))
+        mean_diversity.append(hin.mean_diversity(['monthly_activity','is_of_type'],alpha=2.0))
+        collective_pa[:,i] = hin.proportional_abundance(['monthly_activity','is_of_type'])
+        # and we delete the link group we created for this month
+        hin.DeleteLinkGroup('monthly_activity')
+        
+    import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(2, 1)
+    axs[0].stackplot(np.arange(len(months)),collective_pa,baseline='zero')
+    axs[0].set_xticklabels(['%d-%d'%(y,m) for m,y in months],rotation = 45, ha="left")
+    axs[1].plot(np.arange(len(months)),collective_diversity)
+    axs[1].plot(np.arange(len(months)),mean_diversity)
+    axs[1].legend(['Collective diversity','Mean diversity'])
+    axs[1].set_xticklabels(['%d-%d'%(y,m) for y,m in months],rotation = 45, ha="left")
+
+![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/time_series/time_series.png)
+
 #### Producing and evaluating recommendations
 
 Upcoming section. You can take a peek in the *examples* folder.
-
-#### Time series
-
-Upcoming section.
 
 #### Applications in other domains
 

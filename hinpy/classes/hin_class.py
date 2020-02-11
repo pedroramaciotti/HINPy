@@ -68,6 +68,39 @@ class HIN:
     # Functions Changing Link Groups          #
     ###########################################
 
+    # New ones !
+
+    def CreateLinkGroup(self,linkgroup,name,
+                        datetimes=None,
+                        condition=None,
+                        verbose=False):
+        if (datetimes!=None and condition!=None) or (datetimes==None and condition==None):
+            raise ValueError('To create a link group you have to provide datetime bounds or (XOR) a condition method.')
+        
+        if datetimes!=None:
+            # Get the group ids of the Link Group
+            og_start = self.object_group_dic[self.GetLinkGroup(linkgroup).start_id]
+            og_end  = self.object_group_dic[self.GetLinkGroup(linkgroup).end_id]
+            # Getting subtable of the Link Group
+            subtable=self.table[self.table.relation==linkgroup].copy(deep=True)
+            # Applyting the condition
+            subtable=subtable[(subtable.timestamp>=pd.Timestamp(datetimes['min']))&(subtable.timestamp<=pd.Timestamp(datetimes['max']))]
+            # Changing name
+            subtable.loc[:,'relation'] = name
+            # Saving the new Link Group
+            self.table = self.table.append(subtable).reset_index(drop=True)
+            lg_id = self.GetNewLinkGroupID()
+            self.link_group_dic[lg_id] = LinkGroup(table=subtable,
+                                                    name=subtable.relation.iloc[0],
+                                                    id=lg_id,
+                                                    start_og=og_start,
+                                                    end_og=og_end,
+                                                    verbose=verbose)
+            return;
+        if condition!=None:
+            raise ValueError('Link group creation with ')
+
+
     # TODO: re-organize and move to link_group_functions
 
     def CreateInverseLinkGroup(self,existing_relation_name,new_relation_name=None,verbose=False):
