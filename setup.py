@@ -11,16 +11,16 @@ INSTALL_REQUIRES=[
 'pandas',
 'surprise',
 'scipy',
-'surprise',
+'scikit-surprise',
 ]
 
 setup(name='hinpy',
-      version='0.1',
+      version='0.1.1',
       description='A framework for the analysis of diversity in Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
       url = 'https://github.com/pedroramaciotti/HINPy',
-      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.tar.gz',
+      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.1.tar.gz',
       keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity'],
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES)
