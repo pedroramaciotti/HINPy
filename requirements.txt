@@ -5,4 +5,4 @@ pandas>=0.21.0
 surprise>=0.1
 scipy>=1.2.0
 surprise>=1.1.0
-sklearn>=0.22.1
+scikit-learn>=0.22.0

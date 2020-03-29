@@ -33,9 +33,7 @@ def HINRS(hin,relation_name,parameters,verbose=False):
         raise ValueError('No method specified in parameters.')
 
     # Applyting the chosen RS
-    print(parameters['method'])
     if parameters['method']=='Copy':
-        print('Copy')
         predicted_table = table.copy(deep=True)
         predicted_table.loc[:,'relation']='copied_%s'%table.relation.iloc[0]
         report_dic = {}

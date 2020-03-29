@@ -451,8 +451,10 @@ class HIN:
         pas = self.proportional_abundances(path,include_sink=include_sink).tolil().data
         diversities=[]
         for p in pas:
-            if np.abs(np.sum(p)-1.0)<1e-6:
+            if np.abs(np.sum(p)-1.0)<1e-4:
                 diversities.append(TrueDiversity(p,alpha))
+            else:
+                diversities.append(np.nan)
         return np.array(diversities);
 
     def mean_diversity(self,path,alpha=1.0,include_sink=False,method='arithmetic'):

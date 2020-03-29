@@ -10,5 +10,7 @@ setup(name='hinpy',
       description='A framework for the analysis of diversity in Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
+      url = 'https://github.com/pedroramaciotti/HINPy',
+      keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity']
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES)
