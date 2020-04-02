@@ -2,5 +2,5 @@ Cython>=0.24.0
 numpy>=1.14.0
 pandas>=0.21.0
 scipy>=1.2.0
-surprise>=1.1.0
+surprise>=0.1
 scikit-learn>=0.22.0
