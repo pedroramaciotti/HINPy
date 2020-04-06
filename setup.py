@@ -9,6 +9,7 @@ INSTALL_REQUIRES=[
 'numpy',
 'scikit-learn',
 'pandas',
+'tqdm',
 'surprise',
 'scipy',
 'scikit-surprise',
