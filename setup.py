@@ -16,7 +16,7 @@ INSTALL_REQUIRES=[
 ]
 
 setup(name='hinpy',
-      version='0.1.2',
+      version='0.1.3',
       description='A framework for the analysis of diversity in Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
