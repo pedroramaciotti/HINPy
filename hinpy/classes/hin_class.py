@@ -408,6 +408,14 @@ class HIN:
         return FirstAbsentNumberInList([k for k,v in self.object_group_dic.items()])
 
 
+    # Get path-related objects
+
+    def GetPathStartGroupPositionDic(self,path):
+        return self.GetLinkGroupStartObjectGroup(path[0]).OjectPositionDicFromName();
+    def GetPathEndGroupPositionDic(self,path):
+        return self.GetLinkGroupEndObjectGroup(path[-1]).OjectPositionDicFromName();
+
+
     ##############################################
     # Path Proportional Abundances & Diversities #
     ##############################################
