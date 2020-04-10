@@ -15,7 +15,7 @@ def VerboseMessage(verbose,message):
 
 def ETSec2ETTime(s):
     s=int(s)
-    days, remainder = divmod(s,3600*24)
-    hours, remainder = divmod(remainder, 3600)
+    # days, remainder = divmod(s,3600*24)
+    hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return '{:} days - {:02}:{:02}:{:02}'.format(int(days),int(hours), int(minutes), int(seconds));
+    return '{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds));
