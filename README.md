@@ -72,7 +72,7 @@ The corresponfing file (available in *datasets* as `simple_example.csv`) would l
 First, load the file:
 
     import hinpy
-    hin = hinpy.class.HIN(filename='simple_example.csv')
+    hin = hinpy.HIN(filename='simple_example.csv')
 
 Say for example that E0 contains past choices of users in V0 of items in V1, and that item can be associated with categories or types in V2. If E1 contains recommendations made to users, we can measure
 
@@ -103,9 +103,9 @@ To see what probability corresponds to which entities you can check to dictionna
 
 So, in this case, 25% chances of ending in t1, 37.5% for t2 and t3.
 
-You can compute transpose (*inversed*) meta paths to include in computations 
+You can compute transpose (*inverse*) meta paths to include in computations 
 
-    hin = hinpy.class.HIN(filename='simple_example.csv',inverse_relations=True)
+    hin = hinpy.HIN(filename='simple_example.csv',inverse_relations=True)
 
 and then used them apportionments and computations (it automatically add the prefix *inverse_*):
 
@@ -124,13 +124,14 @@ Note that 0.34375 is the reciprocal of the collective E0-E2 Herfindahl (alpha=2)
 
 Once you have a distribution, you do whatever you want with it.
 
-*The remainder of this README is under construction...*
 
 #### A second example
 
+Let us consider now a more complex example.
+
 ![logo](https://raw.githubusercontent.com/pedroramaciotti/HINPy/master/docs/example.png)
 
-File available in *datasets* as `example.csv`:
+The file for this example is available in *datasets* as `example.csv`:
 
     E0,V0,v01,V2,v21,,
     E0,V0,v02,V2,v22,,
@@ -154,6 +155,43 @@ File available in *datasets* as `example.csv`:
     E5,V1,v11,V5,v51,,
     E5,V1,v12,V5,v52,,
     E5,V1,v12,V5,v53,,
+
+Let us load the file as before:
+
+    hin = hinpy.HIN('example.csv',inverse_relations=True)
+
+We can list all the link groups recognized in the input file:
+
+    hin.GetLinkGroupsNames()
+    >>> ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'inverse_E0', 'inverse_E1', 'inverse_E2', 'inverse_E3', 'inverse_E4', 'inverse_E5']
+
+You can compute diversities in arbitrarily longe meta paths:
+
+    hin.collective_diversity(['E0','E2','E4'],alpha=1)
+    >>> 2.3811015779522995
+
+Using inverse relations you can also compose arbitrarily *complex* meta paths:
+
+    hin.collective_diversity(['E0','E2','inverse_E2','E2','E4','inverse_E5'],alpha=1)
+    >>> 1.9796263300525183
+
+#### Value propagation / value aggregation along meta paths
+
+Since we can produce the proportional abundance of any group of nodes in any other group of nodes following a meta path, we can also use those proportion in the proportional abundance to compute means. Let's say that nodes in V0 have some associated value,
+
+    V0_values = {'v01':1,'v02':-1}
+
+ and that you want to propagate that value to nodes in V1 using common relation with nodes in V1:
+
+    hin.path_value_aggregation(V0_values,path = ['E1','inverse_E0'])
+    >>> {'v12': 0.0, 'v11': -1.0}
+
+The same procedure can be used with any meta path. For example:
+
+    V5_values = {'v51':-2,'v52':5,'v53':1}
+    hin.path_value_aggregation(V5_values,path = ['E0','E2','E4'])
+    >>> {'v01': -2.0, 'v02': 3.0}
+
 
 #### Time series
 
