@@ -15,12 +15,12 @@ INSTALL_REQUIRES=[
 ]
 
 setup(name='hinpy',
-      version='0.1.4',
+      version='0.1.5',
       description='A python framework for Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
       url = 'https://github.com/pedroramaciotti/HINPy',
-      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.4.tar.gz',
+      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.5.tar.gz',
       keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity'],
       packages=find_packages(),
       install_requires=INSTALL_REQUIRES)
