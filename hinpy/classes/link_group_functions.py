@@ -6,8 +6,6 @@ from sklearn.preprocessing import normalize
 import copy
 
 from time import time as TCounter
-import tqdm
-
 from hinpy.general import *
 
 from .object_group_class import ObjectGroup

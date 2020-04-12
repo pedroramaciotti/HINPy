@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import collections
 
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats.mstats import gmean
@@ -400,6 +401,9 @@ class HIN:
     def GetLinkGroupsNames(self):
         return [lg.name for lg_id,lg in self.link_group_dic.items()]
 
+    def GetObjectGroupPositionDic(self,name):
+        return self.GetObjectGroup(name).OjectPositionDicFromName();
+
     # Get vacant id for new groups
     def GetNewLinkGroupID(self):
         return FirstAbsentNumberInList([k for k,v in self.link_group_dic.items()])
@@ -482,6 +486,42 @@ class HIN:
         if np.abs(p.sum()-0.0)<1e-6:
             raise ValueError('All mass was in the sink.')
         return TrueDiversity(p,alpha);
+
+    ##############################################
+    # Value propagation                          #
+    ##############################################
+
+    def path_value_aggregation(self,values_dic,path):
+        """
+        Aggregate values using a meta-path. Values in the ending
+        object group are aggregated into values for the starting 
+        object group.
+        """
+        path=CheckPath(path)
+        # Setting the ending object group position
+        eg_pos_dic = self.GetPathEndGroupPositionDic(path)
+        eg = self.GetLinkGroupEndObjectGroup(path[-1])
+        # Checking that values conforms ending obj. group
+        # (length: dictionary has the same num. of elements)
+        # if eg.size!=len(values_dic):
+        #     raise ValueError
+        # (inclusion: all keys are objects of the group)
+        values_dic_keys = [k for k,v in values_dic.items()]
+        if np.setdiff1d(eg.object_list,values_dic_keys).size>0:
+            raise ValueError('Values must be provided for all objects in %s.'%eg.name)
+        # Inverse ending object group position dictionaries
+        inv_eg_pos_dic = dict((v, k) for k, v in eg_pos_dic.items())
+        # Put values from values_dic in a vector in order given by eg_pos_dic
+        
+        e_values_vec = np.array([values_dic[inv_eg_pos_dic[i]] for i in range(eg.size)])
+        # proportional abundances matrix is (starting obj. group size)x(ending obj. group size)
+        PAM = self.proportional_abundances(path)
+        s_values_vec = PAM.dot(e_values_vec)
+        # putting values in a dictionary
+        sg_pos_dic = self.GetPathStartGroupPositionDic(path)
+        inv_sg_pos_dic = dict((v, k) for k, v in sg_pos_dic.items())
+        ordered_s_objects = [v for k,v in collections.OrderedDict(sorted(inv_sg_pos_dic.items())).items() ]
+        return dict(zip(ordered_s_objects, s_values_vec));
 
 
 

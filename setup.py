@@ -9,7 +9,6 @@ INSTALL_REQUIRES=[
 'numpy',
 'scikit-learn',
 'pandas',
-'tqdm',
 'surprise',
 'scipy',
 'scikit-surprise',
@@ -17,7 +16,7 @@ INSTALL_REQUIRES=[
 
 setup(name='hinpy',
       version='0.1.4',
-      description='A framework for the analysis of diversity in Heterogeneous Information Networks.',
+      description='A python framework for Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
       url = 'https://github.com/pedroramaciotti/HINPy',
