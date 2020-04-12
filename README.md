@@ -175,18 +175,18 @@ Using inverse relations you can also compose arbitrarily *complex* meta paths:
     hin.collective_diversity(['E0','E2','inverse_E2','E2','E4','inverse_E5'],alpha=1)
     >>> 1.9796263300525183
 
-#### Value propagation / value aggregation along meta paths
+#### Value propagation/aggregation along meta paths
 
-Since we can produce the proportional abundance of any group of nodes in any other group of nodes following a meta path, we can also use those proportion in the proportional abundance to compute means. Let's say that nodes in V0 have some associated value,
+Since we can produce the proportional abundance of any group of nodes in any other group of nodes following a meta path, we can also use those proportions in the proportional abundance to compute means of values. Let's say that nodes in V0 have some associated value,
 
     V0_values = {'v01':1,'v02':-1}
 
- and that you want to propagate that value to nodes in V1 using common relation with nodes in V1:
+ and that you want to propagate that value to nodes in V1 using common relation with nodes in V0:
 
     hin.path_value_aggregation(V0_values,path = ['E1','inverse_E0'])
     >>> {'v12': 0.0, 'v11': -1.0}
 
-The same procedure can be used with any meta path. For example:
+The key ingredients are: 1) a dictionary for the values of the node groups whose values you want to aggregate, and 2) a meta path that starts in the node groups that will inherit the values and ends in the node group from where values are to be inherited. The same procedure can be used with any meta path. For example:
 
     V5_values = {'v51':-2,'v52':5,'v53':1}
     hin.path_value_aggregation(V5_values,path = ['E0','E2','E4'])
