@@ -183,14 +183,19 @@ Since we can produce the proportional abundance of any group of nodes in any oth
 
  and that you want to propagate that value to nodes in V1 using common relation with nodes in V0:
 
-    hin.path_value_aggregation(V0_values,path = ['E1','inverse_E0'])
+    hin.path_value_aggregation(V0_values, path = ['E1','inverse_E0'])
     >>> {'v12': 0.0, 'v11': -1.0}
 
 The key ingredients are: 1) a dictionary for the values of the node groups whose values you want to aggregate, and 2) a meta path that starts in the node groups that will inherit the values and ends in the node group from where values are to be inherited. The same procedure can be used with any meta path. For example:
 
     V5_values = {'v51':-2,'v52':5,'v53':1}
-    hin.path_value_aggregation(V5_values,path = ['E0','E2','E4'])
+    hin.path_value_aggregation(V5_values, path = ['E0','E2','E4'])
     >>> {'v01': -2.0, 'v02': 3.0}
+
+If a node cannot inherit values from a meta path because no set of edges in it link to a target node, the resulting value will be NaN:
+
+    hin.path_value_aggregation(V5_values, path = ['E4']) 
+    >>> {'v31': nan, 'v32': -2.0, 'v34': 3.0, 'v33': nan}
 
 
 #### Time series

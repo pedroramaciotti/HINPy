@@ -517,6 +517,7 @@ class HIN:
         # proportional abundances matrix is (starting obj. group size)x(ending obj. group size)
         PAM = self.proportional_abundances(path)
         s_values_vec = PAM.dot(e_values_vec)
+        s_values_vec[np.ravel(PAM.sum(axis=1))==0.0] = np.nan
         # putting values in a dictionary
         sg_pos_dic = self.GetPathStartGroupPositionDic(path)
         inv_sg_pos_dic = dict((v, k) for k, v in sg_pos_dic.items())
