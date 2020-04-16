@@ -5,13 +5,13 @@ from setuptools import setup, find_packages
 # with open('requirements.txt') as f:
 #     INSTALL_REQUIRES = [l.strip() for l in f.readlines() if l]
 
-INSTALL_REQUIRES=[
-'numpy',
-'scikit-learn',
-'pandas',
-'surprise',
-'scipy',
-'scikit-surprise',
+INSTALL_REQUIRES = [
+    'numpy',
+    'scikit-learn',
+    'pandas',
+    'surprise',
+    'scipy',
+    'scikit-surprise',
 ]
 
 setup(name='hinpy',
@@ -19,8 +19,11 @@ setup(name='hinpy',
       description='A python framework for Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
-      url = 'https://github.com/pedroramaciotti/HINPy',
-      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.6.tar.gz',
-      keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity'],
+      url='https://github.com/pedroramaciotti/HINPy',
+      download_url='https://github.com/pedroramaciotti/HINPy/archive/0.1.6.tar.gz',
+      keywords=['Heterogeneous Information Networks',
+                'Recommender Systems', 'Diversity'],
       packages=find_packages(),
+      classifiers=['LICENSE :: OSI APPROVED :: APACHE SOFTWARE LICENSE'],
+      data_files=[('', ['LICENSE'])],
       install_requires=INSTALL_REQUIRES)
