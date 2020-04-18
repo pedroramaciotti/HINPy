@@ -52,3 +52,7 @@ def GetObjectsFromTableWithGroup(table,object_group_name):
     o_list+=list(table[table.end_group==object_group_name].end_object)
     o_list=list(set(o_list))
     return o_list;
+
+
+
+

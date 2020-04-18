@@ -16,6 +16,7 @@ from hinpy.rs.hin_rs import *
 from hinpy.diversity.truediversity import *
 from hinpy.diversity.other_measures import *
 from hinpy.general import *
+from .hin_graphics import *
 
 
 class HIN:
@@ -524,6 +525,18 @@ class HIN:
         ordered_s_objects = [v for k,v in collections.OrderedDict(sorted(inv_sg_pos_dic.items())).items() ]
         return dict(zip(ordered_s_objects, s_values_vec));
 
+    #####################################
+    # Plotters                          #
+    #####################################
+
+    def plot_schema(self,filename=None,
+                node_size=700,layout='spring',arrow_size=10,
+                edge_labels=True,node_labels=True):
+        table = self.table[~self.table.relation.apply(lambda r: r.startswith('inverse_'))].drop_duplicates(subset=['relation','start_group','end_group'])[['start_group','end_group','relation']]
+        plot_hin(table,filename=filename,
+                node_size=node_size,layout=layout,arrowsize=arrow_size,
+                edge_labels=edge_labels,node_labels=node_labels)
+        return;
 
 
     # THESE ARE LEGACY FUNCTIONS (to be removed)

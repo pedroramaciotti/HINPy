@@ -120,7 +120,7 @@ If you want to use a different diversity measures (different from True Diversity
     hinpy.diversity.HHI(pa) # Herfindahl-Hirschmann Index
     >>> 0.34375
 
-Note that 0.34375 is the reciprocal of the collective E0-E2 Herfindahl (alpha=2) diversity. HHI measures concentration, the inverse of diversity.
+Note that 0.34375 is the reciprocal of the collective E0-E2 Herfindahl (alpha=2) diversity. HHI measures concentration, the reciprocal of diversity.
 
 Once you have a distribution, you do whatever you want with it.
 
