@@ -43,7 +43,7 @@ You can then load your CSV (without header nor index):
 
     import hinpy 
 
-    hin = hinpy.classes.HIN(filename=path_to_your_csv_file)
+    hin = hinpy.HIN(filename=path_to_your_csv_file)
 
 #### A simple example
 
