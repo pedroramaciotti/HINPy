@@ -24,4 +24,6 @@ setup(name='hinpy',
       download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.7.tar.gz',
       keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity','Echo Chamber','Filter Bubble'],
       packages=find_packages(),
+      classifiers=['LICENSE :: OSI APPROVED :: APACHE SOFTWARE LICENSE'],
+      data_files=[('', ['LICENSE'])],
       install_requires=INSTALL_REQUIRES)
