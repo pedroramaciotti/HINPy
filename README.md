@@ -165,6 +165,23 @@ We can list all the link groups recognized in the input file:
     hin.GetLinkGroupsNames()
     >>> ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'inverse_E0', 'inverse_E1', 'inverse_E2', 'inverse_E3', 'inverse_E4', 'inverse_E5']
 
+You can compute the apportionments (also called proportional abundances), which are probability mass functions resulting from random walks along meta-paths. You can compute the "collective" proportional abundance, starting randomly in an object group
+
+    hin.proportional_abundance(path=['E0','E2','E4'])
+    >>> array([0.16666667, 0.66666667, 0.16666667])
+
+To see the objects to which these probabilities correspond, you have to check
+
+    hin.GetObjectGroup('V5').objects_ids
+    >>> {'v52': 0, 'v51': 1, 'v53': 2}
+
+You can also compute the "individual" proportional abundances, starting in a single object in an objects group
+
+    hin.proportional_abundances(path=['E0','E2','E4'])
+    matrix([[0. , 1. , 0. ],[0.5, 0. , 0.5]])
+
+Using these proportional abundances, you can compute their diversities, as you would with other probability mass functions.
+
 You can compute diversities in arbitrarily longe meta paths:
 
     hin.collective_diversity(['E0','E2','E4'],alpha=1)
