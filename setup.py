@@ -13,15 +13,16 @@ INSTALL_REQUIRES=[
 'scipy',
 'scikit-surprise',
 'networkx',
+'matplotlib'
 ]
 
 setup(name='hinpy',
-      version='0.1.8',
+      version='0.1.9',
       description='A python framework for Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
       url = 'https://github.com/pedroramaciotti/HINPy',
-      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.8.tar.gz',
+      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.9.tar.gz',
       keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity','Echo Chamber','Filter Bubble'],
       packages=find_packages(),
       classifiers=['LICENSE :: OSI APPROVED :: APACHE SOFTWARE LICENSE'],
