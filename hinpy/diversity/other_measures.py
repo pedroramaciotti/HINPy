@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 
-from sklearn.metrics import jaccard_similarity_score
-
 from time import time as TCounter
 
 from hinpy.general import *
