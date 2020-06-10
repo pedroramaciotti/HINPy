@@ -98,8 +98,13 @@ One can also measure apportionments along paths in the network schema (*meta pat
 
 To see what probability corresponds to which entities you can check to dictionnary of the object group where your path ends (E2), V2:
 
-    hin.GetObjectGroup('V2').objects_ids
+    hin.GetObjectGroupPositionDic('V2')
     >>> {'t3': 0, 't2': 1, 't1': 2}
+
+or the other way around:
+
+    hin.GetObjectGroupObjectDic('V2')
+    >>> {0: 't3', 1: 't2', 2: 't1'}
 
 So, in this case, 25% chances of ending in t1, 37.5% for t2 and t3.
 

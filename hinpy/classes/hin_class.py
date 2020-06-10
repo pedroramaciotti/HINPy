@@ -357,53 +357,58 @@ class HIN:
 
     # TODO: re-organize and move to hin_functions
 
-    # Get groups
+    # Get ObjectGroup from name
     def GetObjectGroup(self,name):
         for og_id,og in self.object_group_dic.items():
             if og.name==name:
                 return og;
         raise ValueError('Object Group %s not found'%name)
-
+    # Get ObjectGroup at start of LinkGroup from name
     def GetLinkGroupStartObjectGroup(self,name):
         return self.GetObjectGroup(self.object_group_dic[self.GetLinkGroup(name).start_id].name)
-
+    # Get ObjectGroup at end of LinkGroup from name
     def GetLinkGroupEndObjectGroup(self,name):
         return self.GetObjectGroup(self.object_group_dic[self.GetLinkGroup(name).end_id].name)
-
+    # Get LinkGroup from name
     def GetLinkGroup(self,name):
         for lg_id,lg in self.link_group_dic.items():
             if lg.name==name:
                 return lg;
         raise ValueError('Link Group %s not found'%name)
-
+    # Get LinkGroup density from name
     def GetLinkGroupDensity(self,name):
         sogs = self.GetLinkGroupStartObjectGroup(name).size
         eogs = self.GetLinkGroupEndObjectGroup(name).size
         lgs =  self.GetLinkGroup(name).size
         return lgs/(sogs*eogs);
 
-    # Get Ids of groups
+    # Get Ids of ObjectGroup from name
     def GetObjectGroupId(self,name):
         for og_id,og in self.object_group_dic.items():
             if og.name==name:
                 return og_id;
         raise ValueError('Object Group %s not found'%name)
-
+    # Get Ids of LinkGroup from name
     def GetLinkGroupId(self,name):
         for lg_id,lg in self.link_group_dic.items():
             if lg.name==name:
                 return lg_id;
         raise ValueError('Link Group %s not found'%name)
 
-    # Get names of groups
+    # Get names of ObjectGroups
     def GetObjectGroupsNames(self):
         return [og.name for og_id,og in self.object_group_dic.items()]
 
+    # Get names of LinkGroups
     def GetLinkGroupsNames(self):
         return [lg.name for lg_id,lg in self.link_group_dic.items()]
 
+    # Get 
     def GetObjectGroupPositionDic(self,name):
         return self.GetObjectGroup(name).OjectPositionDicFromName();
+    #
+    def GetObjectGroupObjectDic(self,name):
+        return self.GetObjectGroup(name).OjectNameDicFromPosition();
 
     # Get vacant id for new groups
     def GetNewLinkGroupID(self):
@@ -537,6 +542,11 @@ class HIN:
                 node_size=node_size,layout=layout,arrowsize=arrow_size,
                 edge_labels=edge_labels,node_labels=node_labels)
         return;
+
+
+
+
+
 
 
     # THESE ARE LEGACY FUNCTIONS (to be removed)
