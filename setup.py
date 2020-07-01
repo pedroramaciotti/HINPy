@@ -17,7 +17,7 @@ INSTALL_REQUIRES=[
 ]
 
 setup(name='hinpy',
-      version='0.1.9',
+      version='0.1.10',
       description='A python framework for Heterogeneous Information Networks.',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
