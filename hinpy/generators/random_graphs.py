@@ -31,7 +31,7 @@ def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):
     ################################
     # Pre-processing the variables #
     ################################    
-        
+    print('done')    
     N_A = int(N_A)
     N_B = int(N_B)
     N_L = int(N_L)
@@ -51,37 +51,22 @@ def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):
     # Filling the edges            #
     ################################   
     
-    # Filling edges in 3 steps:
-    # E1: connecting all nodes from N_min side
-    # E2: connecting N_max-N_min nodes from N_max side
-    # E3: connecting the remaining N_L - N_max
+    # Number of possible unique a/b bipartire graphs
+    NM = N_A*N_B
     
-    # E1: Fill the first N_min edges 
-    table_E1 = pd.DataFrame(columns=['min','max'])
-    table_E1['min'] = [prefix_min_side+'%d'%(i+1) for i in range(N_min)]
-    table_E1['max'] = [prefix_max_side+'%d'%(i+1) for i in range(N_min)]
-    
-    # E2
-    table_E2 = pd.DataFrame(columns=['min','max'])
-    table_E2['min'] = np.random.choice(table_E1['min'],size=(N_max-N_min))
-    table_E2['max'] = [prefix_max_side+'%d'%(i+N_min+1) for i in range(N_max-N_min)]
-    
-    # E3
-    table_E3 = pd.DataFrame(columns=['min','max'])
-    if N_L > N_max:
-        table_E3['min'] = np.random.choice(table_E1['min'],size=(N_L-N_max))
-        table_E3['max'] = np.random.choice(pd.concat([table_E1['max'],table_E2['max']],axis=0),size=(N_L-N_max))
+    # Generate vector of N_L random int  
+    if (not multigraph):
+        table_m = random.sample(range(NM),N_L)
+        table_m = [x+1 for x in table_m]
         
-    # Concatenating the tables from the 3 stages
-    table = pd.concat([table_E1,table_E2,table_E3],axis=0,ignore_index=True)
+    else:
+        table_m = np.random.randint(1,NM,N_L)
     
-    # This is perfectible !!!!!!!!
-    # We are randomizing the whole of E3 when only one edge repeated
-    # Ideally: uniform random sampling of random bipartite space
-    # Sub-optimal but better: choose at random, but edge by edge
-    while table.duplicated().any() and (not multigraph): 
-        table_E3['max'] = np.random.choice(pd.concat([table_E1['max'],table_E2['max']],axis=0),size=(N_L-N_max))
-        table = pd.concat([table_E1,table_E2,table_E3],axis=0,ignore_index=True)
+    # Find a & b coordinates for each random m
+    table = pd.DataFrame(columns=['min','max'])
+    table ['min'] = [prefix_min_side+'%d'%(int(x/N_max)+1) for x in table_m]
+    table ['max'] = [prefix_max_side+'%d'%(x%N_max+1) for x in table_m]
+    
     
     ################################
     # Formatting the output table  #
