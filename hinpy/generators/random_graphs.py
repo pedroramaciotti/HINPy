@@ -3,6 +3,7 @@ import numpy as np
 import string as stringmod
     
 def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):    
+
     
     ##################
     # Initial Checks #
@@ -18,7 +19,7 @@ def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):
         raise ValueError('Number of nodes on each side must be at least the number of edges.')
         
     if name_A is None:
-        name_A = 'A'
+        name_A = 'Z'
     if name_B is None:
         name_B = 'B'
     
@@ -26,12 +27,15 @@ def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):
         raise ValueError('name_A, name_B must be string')
     if name_A==name_B:
         raise ValueError('name_A must be different from name_B')
+        
+    if N_L/(N_A*N_B) > 1 and multigraph == False:
+        raise ValueError('It is not possible to generate unique bipartite graphs with density bigger than 1')    
     
         
     ################################
     # Pre-processing the variables #
     ################################    
-    print('done')    
+        
     N_A = int(N_A)
     N_B = int(N_B)
     N_L = int(N_L)
@@ -47,26 +51,50 @@ def random_bipartite(N_A,N_B,N_L,name_A=None,name_B=None,multigraph=False):
     N_min = np.min([N_A,N_B])
     N_max = np.max([N_A,N_B])
     
-    ################################
-    # Filling the edges            #
-    ################################   
-    
     # Number of possible unique a/b bipartire graphs
     NM = N_A*N_B
     
     # Generate vector of N_L random int  
-    if (not multigraph):
-        table_m = random.sample(range(NM),N_L)
-        table_m = [x+1 for x in table_m]
+    #table_m = np.random.choice(range(NM),size=N_L-N_max,replace=not multigraph)
+    table_m = np.array(range(NM))
+#    ################################
+#    # Filling the edges            #
+#    ################################   
+    
+    # Filling edges in 3 steps:
+    # E1: connecting all nodes from N_min side
+    # E2: connecting N_max-N_min nodes from N_max side
+    # E3: connecting the remaining N_L - N_max
+    
+    # E1: Fill the first N_min edges 
+    table_m1 = np.array(range(N_min))*(N_min+1)
+    
+    # E2
+    #table_m2 = np.random.choice(list(range(N_min*N_min,N_min*N_max)),size=N_max-N_min,replace=multigraph)
+    table_m2 = np.array(range(N_max-N_min))*N_min+pow(N_min,2)+np.random.randint(0,N_min-1,N_max-N_min)
+
+    # Eliminating used grafs from table_m for case multigraph=False
+    if multigraph == False:
+        # Extract values from E1, in table_m
+        mask1 = np.isin(table_m,table_m1)
+        table_m = np.extract(~mask1,table_m)
         
+        # Extract values from E2, in table_m
+        mask2 = np.isin(table_m,table_m2)
+        table_m = np.extract(~mask2,table_m)
+        
+    # E3
+        table_m3 = np.random.choice(table_m,size=N_L-N_max,replace=multigraph)        
+    
     else:
-        table_m = np.random.randint(1,NM,N_L)
+        table_m3 = np.random.choice(table_m,size=N_L-N_max)
     
-    # Find a & b coordinates for each random m
-    table = pd.DataFrame(columns=['min','max'])
-    table ['min'] = [prefix_min_side+'%d'%(int(x/N_max)+1) for x in table_m]
-    table ['max'] = [prefix_max_side+'%d'%(x%N_max+1) for x in table_m]
+    # Concatenate tables from E1,E2 & E3
+    table_conc = np.concatenate((table_m1,table_m2,table_m3),axis=0)
     
+    # Create DataFrame with 'min' & 'max' columns for graphs
+    d = {'min':  (np.trunc(table_conc/N_min+1)), 'max': (table_conc%N_min+1) }
+    table = pd.DataFrame(data=d)
     
     ################################
     # Formatting the output table  #
@@ -134,7 +162,6 @@ def random_concatenated_bipartites(list_N_nodes,list_N_edges,list_names=None,mul
 
 
     
-
 
 
 
