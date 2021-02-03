@@ -6,14 +6,13 @@ from setuptools import setup, find_packages
 #     INSTALL_REQUIRES = [l.strip() for l in f.readlines() if l]
 
 INSTALL_REQUIRES=[
-'numpy',
-'scikit-learn',
-'pandas',
-'surprise',
-'scipy',
-'scikit-surprise',
+'matplotlib',
 'networkx',
-'matplotlib'
+'numpy',
+'pandas',
+'scikit-learn',
+'scikit-surprise',
+'scipy',
 ]
 
 setup(name='hinpy',
@@ -22,7 +21,7 @@ setup(name='hinpy',
       author='Pedro Ramaciotti Morales',
       author_email='pedro.ramaciotti@gmail.com',
       url = 'https://github.com/pedroramaciotti/HINPy',
-      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.9.tar.gz',
+      download_url = 'https://github.com/pedroramaciotti/HINPy/archive/0.1.10.tar.gz',
       keywords = ['Heterogeneous Information Networks','Recommender Systems','Diversity','Echo Chamber','Filter Bubble'],
       packages=find_packages(),
       #license='apache-2.0',
