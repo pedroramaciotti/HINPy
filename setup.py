@@ -6,14 +6,13 @@ from setuptools import setup, find_packages
 #     INSTALL_REQUIRES = [l.strip() for l in f.readlines() if l]
 
 INSTALL_REQUIRES=[
-'numpy',
-'scikit-learn',
-'pandas',
-'surprise',
-'scipy',
-'scikit-surprise',
+'matplotlib',
 'networkx',
-'matplotlib'
+'numpy',
+'pandas',
+'scikit-learn',
+'scikit-surprise',
+'scipy',
 ]
 
 setup(name='hinpy',
